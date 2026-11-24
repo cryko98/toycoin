@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Toycoin ($TOY) — Every trade wraps a gift</title>
+  <meta name="description" content="$TOY is a Solana charity coin on pump.fun. 100% of creator rewards go to Toys for Tots via donate.gg — tracked live on-chain." />
+  <meta name="theme-color" content="#B3262E" />
+  <meta property="og:title" content="Toycoin ($TOY) — Every trade wraps a gift" />
+  <meta property="og:description" content="100% of pump.fun creator rewards → Toys for Tots. Tracked live on-chain." />
+  <meta property="og:image" content="assets/icon-512.png" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script type="importmap">
+    { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+    } }
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <!-- ============ NAV ============ -->
+  <header class="nav" id="nav">
+    <a class="nav__brand" href="#top" aria-label="Toycoin home">
+      <img src="assets/logo.jpg" alt="" width="40" height="40" />
+      <span>Toycoin</span>
+    </a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="#journey">Gift journey</a>
+      <a href="#tracker">Tracker</a>
+      <a href="#how">How it works</a>
+      <a href="#charity">The charity</a>
+      <a href="#tokenomics">Tokenomics</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn--gold btn--sm magnetic" data-link="pump" href="#" target="_blank" rel="noopener">Buy $TOY</a>
+    <button class="nav__burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+  </header>
+  <div class="drawer" id="drawer" hidden>
+    <a href="#journey">Gift journey</a><a href="#tracker">Tracker</a><a href="#how">How it works</a><a href="#charity">The charity</a><a href="#tokenomics">Tokenomics</a><a href="#faq">FAQ</a>
+  </div>
+
+  <main id="main">
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="top">
+      <canvas class="snow" data-density="1"></canvas>
+      <div class="hero__glow" aria-hidden="true"></div>
+      <div class="hero__inner">
+        <div class="hero__copy">
+          <p class="eyebrow"><span class="dot"></span> Solana charity coin · launching on pump.fun</p>
+          <h1 class="hero__title split">
+            Every trade<br />wraps a <em>gift.</em>
+          </h1>
+          <p class="hero__lede">
+            <strong>$TOY</strong> sends <strong>100% of its pump.fun creator rewards</strong> to
+            <strong>Toys for Tots</strong> through donate.gg — tracked live, on-chain, down to the last lamport.
+          </p>
+          <div class="hero__ctas">
+            <a class="btn btn--gold magnetic" data-link="pump" href="#" target="_blank" rel="noopener">
+              Buy $TOY <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a class="btn btn--ghost magnetic" href="#tracker">Watch the gifts roll in</a>
+          </div>
+          <button class="ca" id="caPill" type="button" aria-label="Copy contract address">
+            <span class="ca__label">CA</span>
+            <span class="ca__value" data-ca>Drops at launch — stay tuned</span>
+            <span class="ca__copy" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+            </span>
+          </button>
+        </div>
+
+        <div class="hero__stage">
+          <div class="coin-wrap" id="coinWrap">
+            <canvas id="coin" aria-label="Spinning 3D $TOY coin"></canvas>
+            <img class="coin-fallback" src="assets/logo.jpg" alt="$TOY coin" />
+            <span class="coin-hint">drag to spin</span>
+          </div>
+          <div class="blocks" aria-hidden="true">
+            <div class="block block--t"><span>T</span></div>
+            <div class="block block--o"><span>O</span></div>
+            <div class="block block--y"><span>Y</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="hero__scroll" aria-hidden="true"><span>Scroll to unwrap</span><i></i></div>
+      <svg class="edge edge--bottom" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 60V30 Q 60 0 120 30 T 240 30 T 360 30 T 480 30 T 600 30 T 720 30 T 840 30 T 960 30 T 1080 30 T 1200 30 T 1320 30 T 1440 30 V60Z"/></svg>
+    </section>
+
+    <!-- ============ MARQUEE ============ -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>100% creator rewards</span><i>✦</i><span>Toys for Tots</span><i>✦</i><span>On-chain &amp; verifiable</span><i>✦</i><span>Built on Solana</span><i>✦</i><span>Launched on pump.fun</span><i>✦</i><span>Routed by donate.gg</span><i>✦</i>
+        <span>100% creator rewards</span><i>✦</i><span>Toys for Tots</span><i>✦</i><span>On-chain &amp; verifiable</span><i>✦</i><span>Built on Solana</span><i>✦</i><span>Launched on pump.fun</span><i>✦</i><span>Routed by donate.gg</span><i>✦</i>
+      </div>
+    </div>
+
+    <!-- ============ GIFT JOURNEY (interactive) ============ -->
+    <section class="journey" id="journey">
+      <div class="wrap">
+        <header class="section-head journey__head">
+          <p class="kicker">Interactive</p>
+          <h2 class="split">Watch a trade<br />become a <em>gift.</em></h2>
+          <p class="journey__lede">Scroll and follow one trade: the creator reward becomes a coin, donate.gg turns it into dollars for Toys for Tots, the charity turns that into a wrapped gift — and the gift finds a kid.</p>
+        </header>
+
+        <div class="journey__pin" id="journeyPin">
+        <div class="journey__bar"><span class="journey__hint">Scroll to follow the gift <i aria-hidden="true">↓</i></span><span class="journey__progress"><i id="journeyProgress"></i></span></div>
+        <div class="stage">
+          <div class="stage__scroller" id="stageScroller">
+          <svg class="stage__svg" id="journeySvg" viewBox="0 0 1200 560" role="img" aria-label="Animation: a $TOY trade creates creator rewards in SOL; donate.gg converts them to dollars for Toys for Tots; the charity buys a toy, wraps it, delivers it, and a child opens it under the Christmas tree.">
+            <defs>
+              <!-- toys (100×100 each) -->
+              <symbol id="toy-bear" viewBox="0 0 100 100"><circle cx="26" cy="22" r="13" fill="#B37E25"/><circle cx="74" cy="22" r="13" fill="#B37E25"/><circle cx="26" cy="22" r="6" fill="#E9C48A"/><circle cx="74" cy="22" r="6" fill="#E9C48A"/><ellipse cx="50" cy="76" rx="30" ry="24" fill="#B37E25"/><circle cx="50" cy="40" r="27" fill="#C68C2E"/><ellipse cx="50" cy="49" rx="12" ry="9" fill="#F3DDB4"/><circle cx="50" cy="45" r="4" fill="#1E2F5C"/><circle cx="40" cy="35" r="3.2" fill="#1E2F5C"/><circle cx="60" cy="35" r="3.2" fill="#1E2F5C"/><path d="M44 53q6 5 12 0" stroke="#1E2F5C" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M38 66l12 6 12-6-12 9z" fill="#B3262E"/><ellipse cx="50" cy="80" rx="12" ry="10" fill="#E9C48A"/></symbol>
+              <symbol id="toy-train" viewBox="0 0 100 100"><rect x="6" y="40" width="52" height="34" rx="6" fill="#B3262E"/><rect x="12" y="22" width="24" height="22" rx="3" fill="#D9A441"/><rect x="58" y="50" width="36" height="24" rx="5" fill="#1F5A3D"/><rect x="16" y="47" width="14" height="12" rx="2" fill="#FFF4E3"/><rect x="42" y="30" width="10" height="12" fill="#1E2F5C"/><circle cx="20" cy="80" r="9" fill="#1E2F5C"/><circle cx="46" cy="80" r="9" fill="#1E2F5C"/><circle cx="76" cy="80" r="8" fill="#1E2F5C"/><circle cx="20" cy="80" r="3" fill="#D9A441"/><circle cx="46" cy="80" r="3" fill="#D9A441"/><circle cx="76" cy="80" r="3" fill="#D9A441"/></symbol>
+              <symbol id="toy-rocket" viewBox="0 0 100 100"><path d="M50 4c18 16 20 48 14 72H36C30 52 32 20 50 4z" fill="#FFF4E3"/><path d="M50 4c8 7 13 17 14 28H36c1-11 6-21 14-28z" fill="#B3262E"/><circle cx="50" cy="46" r="9" fill="#1E2F5C" stroke="#D9A441" stroke-width="3.5"/><path d="M36 62L22 86l16-5zM64 62l14 24-16-5z" fill="#B3262E"/><path d="M42 76h16l-4 18h-8z" fill="#D9A441"/></symbol>
+              <symbol id="toy-duck" viewBox="0 0 100 100"><path d="M10 58c0-8 22-5 34-3 3-22 15-36 33-33s21 26 7 36c15 3 20 15 12 27-9 14-68 15-81 3C8 80 6 68 10 58z" fill="#D9A441"/><path d="M86 34l12 4-11 8z" fill="#B3262E"/><circle cx="77" cy="34" r="4.5" fill="#1E2F5C"/><path d="M34 68c12 9 30 8 40-1" stroke="#B37E25" stroke-width="4" fill="none" stroke-linecap="round"/></symbol>
+              <symbol id="solCoin" viewBox="-30 -30 60 60"><circle r="26" fill="url(#goldG)" stroke="#A9781F" stroke-width="3"/><circle r="19" fill="none" stroke="#A9781F" stroke-width="1.5" opacity=".5"/><path d="M-11 -9h18l4-4h-18zM-11 2h18l4-4h-18zM-7 9h18l-4 4h-18z" fill="#6E141A"/></symbol>
+              <symbol id="cash" viewBox="-34 -20 68 40"><rect x="-32" y="-18" width="64" height="36" rx="6" fill="#DDEFD9" stroke="#1F5A3D" stroke-width="3"/><circle r="11" fill="#1F5A3D"/><text y="6" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-weight="700" font-size="17" fill="#DDEFD9">$</text><circle cx="-22" cy="0" r="3" fill="#1F5A3D"/><circle cx="22" cy="0" r="3" fill="#1F5A3D"/></symbol>
+              <pattern id="wrapPat" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="22" height="22" fill="#B3262E"/><rect width="8" height="22" fill="#C8333B"/><circle cx="16" cy="6" r="2" fill="#FFF4E3" opacity=".7"/></pattern>
+              <pattern id="pjPat" width="14" height="14" patternUnits="userSpaceOnUse"><rect width="14" height="14" fill="#C8333B"/><circle cx="4" cy="4" r="1.8" fill="#FFF4E3"/><circle cx="11" cy="11" r="1.8" fill="#FFF4E3"/></pattern>
+              <linearGradient id="goldG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6D488"/><stop offset="1" stop-color="#B98522"/></linearGradient>
+              <linearGradient id="nightG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#131F40"/><stop offset="1" stop-color="#2A3F78"/></linearGradient>
+              <radialGradient id="glowG"><stop offset="0" stop-color="#F2C66B" stop-opacity=".9"/><stop offset="1" stop-color="#F2C66B" stop-opacity="0"/></radialGradient>
+              <clipPath id="boxClip"><rect x="-55" y="-96" width="110" height="96" rx="7"/></clipPath>
+              <clipPath id="lidClip"><rect x="-63" y="-122" width="126" height="28" rx="7"/></clipPath>
+            </defs>
+
+            <!-- ambient snow + ground -->
+            <g id="jSnow"></g>
+            <path d="M0 470 H1200" stroke="#E5D2B3" stroke-width="3"/>
+            <path d="M200 470H236M344 470H380M590 470H700" stroke="#D9A441" stroke-width="4" stroke-dasharray="2 14" stroke-linecap="round" opacity=".7"/>
+            <path id="jPipe" d="M200 300 C 220 300, 225 300, 236 300 M344 300 C 360 300, 370 330, 400 360" stroke="#D9A441" stroke-width="3" stroke-dasharray="4 8" fill="none" opacity=".55"/>
+
+            <!-- 1 · trade card -->
+            <g id="jTrade">
+              <rect x="20" y="220" width="180" height="210" rx="20" fill="#1E2F5C"/>
+              <text x="40" y="254" class="j-mono" fill="#FFF4E3" opacity=".7">$TOY / SOL</text>
+              <text x="40" y="286" class="j-big" fill="#FFF4E3">BUY</text>
+              <rect x="42" y="340" width="11" height="34" rx="2" fill="#4ADE80"/><rect x="46.5" y="330" width="2" height="52" fill="#4ADE80"/>
+              <rect x="64" y="350" width="11" height="22" rx="2" fill="#E0565E"/><rect x="68.5" y="344" width="2" height="34" fill="#E0565E"/>
+              <rect x="86" y="328" width="11" height="40" rx="2" fill="#4ADE80"/><rect x="90.5" y="318" width="2" height="58" fill="#4ADE80"/>
+              <rect x="108" y="312" width="11" height="36" rx="2" fill="#4ADE80"/><rect x="112.5" y="304" width="2" height="50" fill="#4ADE80"/>
+              <rect x="130" y="320" width="11" height="18" rx="2" fill="#E0565E"/><rect x="134.5" y="314" width="2" height="30" fill="#E0565E"/>
+              <rect x="152" y="296" width="11" height="36" rx="2" fill="#4ADE80" id="jLastCandle"/><rect x="156.5" y="288" width="2" height="50" fill="#4ADE80"/>
+              <rect id="jTradeBtn" x="40" y="392" width="140" height="26" rx="13" fill="#D9A441"/>
+              <text x="110" y="410" text-anchor="middle" class="j-mono j-bold" fill="#131F40">TRADE ✓</text>
+            </g>
+
+            <!-- 2 · donate.gg converter -->
+            <g id="jNode">
+              <circle id="jNodeGlow" cx="290" cy="300" r="80" fill="url(#glowG)" opacity="0"/>
+              <rect x="226" y="272" width="128" height="56" rx="18" fill="#FFF4E3" stroke="#1E2F5C" stroke-width="3"/>
+              <path d="M246 293c-4-6-13-3-11 4 1 4 11 11 11 11s10-7 11-11c2-7-7-10-11-4z" fill="#B3262E"/>
+              <text x="302" y="305" text-anchor="middle" class="j-mono j-bold j-node" fill="#1E2F5C">donate.gg</text>
+              <text x="290" y="350" text-anchor="middle" class="j-mono j-small" fill="#1E2F5C" opacity=".6">SOL → USD</text>
+            </g>
+
+            <!-- 3 · charity HQ -->
+            <g id="jCharity">
+              <ellipse cx="480" cy="473" rx="118" ry="9" fill="#000" opacity=".07"/>
+              <circle id="jCharityGlow" cx="480" cy="390" r="130" fill="url(#glowG)" opacity="0"/>
+              <rect x="380" y="330" width="200" height="140" fill="#1F5A3D"/>
+              <path d="M366 338L480 262l114 76" stroke="#15402B" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="#23694A"/>
+              <path d="M480 230l7 15 16 2-12 11 3 16-14-8-14 8 3-16-12-11 16-2z" fill="#D9A441" id="jStar"/>
+              <rect x="398" y="346" width="164" height="30" rx="6" fill="#FFF4E3"/>
+              <text x="480" y="366" text-anchor="middle" class="j-mono j-bold j-sign" fill="#1F5A3D">TOYS FOR TOTS</text>
+              <rect x="396" y="396" width="40" height="38" rx="5" fill="#F2C66B"/><path d="M416 396v38M396 415h40" stroke="#1F5A3D" stroke-width="3"/>
+              <rect x="524" y="396" width="40" height="38" rx="5" fill="#F2C66B"/><path d="M544 396v38M524 415h40" stroke="#1F5A3D" stroke-width="3"/>
+              <rect x="455" y="400" width="50" height="70" rx="5" fill="#0F2E1F"/>
+              <rect id="jDoor" x="455" y="400" width="50" height="70" rx="5" fill="#15402B"/>
+              <circle id="jKnob" cx="496" cy="436" r="3.5" fill="#D9A441"/>
+              <path d="M380 470h200" stroke="#15402B" stroke-width="6"/>
+              <!-- toy fund badge -->
+              <g id="jFund">
+                <rect x="410" y="180" width="140" height="36" rx="18" fill="#FFF4E3" stroke="#1F5A3D" stroke-width="3"/>
+                <text x="480" y="204" text-anchor="middle" class="j-mono j-bold" fill="#1F5A3D">Toy fund <tspan id="jFundAmt" fill="#B3262E">$0</tspan></text>
+              </g>
+            </g>
+
+            <!-- delivery van -->
+            <g id="jVan">
+              <ellipse cx="770" cy="473" rx="84" ry="8" fill="#000" opacity=".08"/>
+              <path d="M700 404h100v54h-100z" fill="#FFF4E3"/>
+              <path d="M700 404h100v54h-100z" fill="none" stroke="#1E2F5C" stroke-width="3"/>
+              <path d="M800 414h22c8 0 12 4 16 12l8 14v18h-46z" fill="#1F5A3D"/>
+              <path d="M806 420h16c4 0 6 2 8 6l6 12h-30z" fill="#BFE0F2"/>
+              <rect x="700" y="440" width="146" height="8" fill="#B3262E"/>
+              <g transform="translate(748 422)"><rect x="-14" y="-12" width="28" height="22" rx="3" fill="#B3262E"/><rect x="-3" y="-12" width="6" height="22" fill="#D9A441"/><path d="M0-12c-5-8-13-6-11-1 1 2 6 1 11 1zM0-12c5-8 13-6 11-1-1 2-6 1-11 1z" fill="#D9A441"/></g>
+              <rect x="696" y="398" width="108" height="8" rx="4" fill="#1E2F5C"/>
+              <g id="jWheel1"><circle cx="728" cy="460" r="13" fill="#1E2F5C"/><circle cx="728" cy="460" r="5" fill="#D9A441"/><path d="M728 449v22M717 460h22" stroke="#D9A441" stroke-width="2"/></g>
+              <g id="jWheel2"><circle cx="816" cy="460" r="13" fill="#1E2F5C"/><circle cx="816" cy="460" r="5" fill="#D9A441"/><path d="M816 449v22M805 460h22" stroke="#D9A441" stroke-width="2"/></g>
+            </g>
+
+            <!-- 5 · the kid's home -->
+            <g id="jHome">
+              <rect x="934" y="232" width="262" height="238" rx="20" fill="#F6E1C0"/>
+              <path d="M934 470V252a20 20 0 0 1 20-20h222a20 20 0 0 1 20 20v218" fill="none" stroke="#E2C595" stroke-width="4"/>
+              <rect x="1084" y="256" width="88" height="70" rx="10" fill="url(#nightG)" stroke="#FFF4E3" stroke-width="5"/>
+              <path d="M1128 256v70M1084 291h88" stroke="#FFF4E3" stroke-width="4"/>
+              <circle cx="1154" cy="272" r="8" fill="#FFF4E3"/><circle cx="1158" cy="269" r="7" fill="#22356A"/>
+              <circle cx="1100" cy="270" r="1.6" fill="#fff"/><circle cx="1112" cy="306" r="1.4" fill="#fff"/><circle cx="1146" cy="310" r="1.6" fill="#fff"/>
+              <path d="M946 244 q 16 14 32 0 q 16 14 32 0 q 16 14 32 0 q 16 14 32 0 q 16 14 32 0 q 16 14 32 0 q 16 14 32 0 q 16 12 26 2" fill="none" stroke="#1F5A3D" stroke-width="5" stroke-linecap="round"/>
+              <g id="jLights"><circle cx="962" cy="252" r="4" fill="#D9A441"/><circle cx="994" cy="252" r="4" fill="#B3262E"/><circle cx="1026" cy="252" r="4" fill="#FFF4E3"/><circle cx="1058" cy="252" r="4" fill="#D9A441"/><circle cx="1090" cy="252" r="4" fill="#B3262E"/><circle cx="1122" cy="252" r="4" fill="#FFF4E3"/><circle cx="1154" cy="252" r="4" fill="#D9A441"/><circle cx="1184" cy="250" r="4" fill="#B3262E"/></g>
+              <ellipse cx="1060" cy="466" rx="120" ry="10" fill="#C9A56E" opacity=".35"/>
+              <!-- tree -->
+              <g id="jTree">
+                <rect x="992" y="440" width="18" height="28" rx="3" fill="#7A4A22"/>
+                <path d="M1001 300l52 84h-104z" fill="#1F5A3D"/>
+                <path d="M1001 334l62 82h-124z" fill="#23694A"/>
+                <path d="M1001 370l70 76h-140z" fill="#1F5A3D"/>
+                <path d="M950 392q50 22 96-6M942 430q60 22 114-8" stroke="#D9A441" stroke-width="3" fill="none"/>
+                <g id="jOrnaments"><circle cx="984" cy="364" r="6" fill="#B3262E"/><circle cx="1022" cy="380" r="6" fill="#D9A441"/><circle cx="968" cy="414" r="6" fill="#FFF4E3"/><circle cx="1030" cy="420" r="6" fill="#B3262E"/><circle cx="1000" cy="402" r="5" fill="#F2C66B"/><circle cx="1046" cy="438" r="5" fill="#FFF4E3"/><circle cx="956" cy="440" r="5" fill="#D9A441"/></g>
+                <path id="jTreeStar" d="M1001 280l6 12 13 2-10 9 3 13-12-7-12 7 3-13-10-9 13-2z" fill="#D9A441"/>
+              </g>
+              <!-- the kid (pyjamas, slippers, messy hair) -->
+              <g id="jKid">
+                <g id="jKidBody">
+                  <rect x="1106" y="432" width="13" height="30" rx="6" fill="url(#pjPat)"/>
+                  <rect x="1123" y="432" width="13" height="30" rx="6" fill="url(#pjPat)"/>
+                  <ellipse cx="1111" cy="464" rx="11" ry="6" fill="#D9A441"/><ellipse cx="1132" cy="464" rx="11" ry="6" fill="#D9A441"/>
+                  <g id="jArmL"><rect x="1088" y="392" width="12" height="38" rx="6" fill="url(#pjPat)"/><circle cx="1094" cy="430" r="7" fill="#F3C9A5"/></g>
+                  <g id="jArmR"><rect x="1142" y="392" width="12" height="38" rx="6" fill="url(#pjPat)"/><circle cx="1148" cy="430" r="7" fill="#F3C9A5"/></g>
+                  <rect x="1096" y="386" width="50" height="54" rx="16" fill="url(#pjPat)"/>
+                  <path d="M1108 388q13 10 26 0" stroke="#FFF4E3" stroke-width="5" fill="none" stroke-linecap="round"/>
+                  <g id="jHead">
+                    <circle cx="1093" cy="352" r="7" fill="#EDBB94"/><circle cx="1149" cy="352" r="7" fill="#EDBB94"/>
+                    <circle cx="1121" cy="350" r="30" fill="#F3C9A5"/>
+                    <path d="M1091 346c-3-22 14-34 32-33 17 1 30 13 28 32-4-8-10-13-17-14 2 4 1 8-2 10-3-7-10-11-17-11 1 4-1 7-4 9-3-5-9-7-14-6-3 4-5 8-6 13z" fill="#5A3215"/>
+                    <path d="M1118 314c2-8 8-12 14-10-5 2-8 6-9 11z" fill="#5A3215"/>
+                    <ellipse cx="1110" cy="353" rx="3.6" ry="4.6" fill="#1E2F5C"/><ellipse cx="1132" cy="353" rx="3.6" ry="4.6" fill="#1E2F5C"/>
+                    <circle cx="1111.4" cy="351.2" r="1.3" fill="#fff"/><circle cx="1133.4" cy="351.2" r="1.3" fill="#fff"/>
+                    <circle cx="1102" cy="363" r="5" fill="#F29C9C" opacity=".55"/><circle cx="1140" cy="363" r="5" fill="#F29C9C" opacity=".55"/>
+                    <path id="jMouth" d="M1115 366q6 4 12 0" stroke="#7A3A2A" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+                    <path id="jMouthOpen" d="M1113 364q8 13 16 0z" fill="#7A3A2A" opacity="0"/>
+                  </g>
+                </g>
+              </g>
+              <g id="jBubble" opacity="0">
+                <rect x="938" y="262" width="138" height="44" rx="16" fill="#FFF4E3" stroke="#B3262E" stroke-width="3"/>
+                <path d="M1060 302l18 14-4-16z" fill="#FFF4E3" stroke="#B3262E" stroke-width="3" stroke-linejoin="round"/>
+                <rect x="1052" y="296" width="16" height="8" fill="#FFF4E3"/>
+                <text x="1007" y="291" text-anchor="middle" class="j-bubble" fill="#B3262E">Thank you!</text>
+              </g>
+            </g>
+
+            <!-- money in motion -->
+            <use id="jCoin1" href="#solCoin" x="-26" y="-26" width="52" height="52"/>
+            <use id="jCoin2" href="#solCoin" x="-26" y="-26" width="52" height="52"/>
+            <use id="jCoin3" href="#solCoin" x="-26" y="-26" width="52" height="52"/>
+            <use id="jCash1" href="#cash" x="-34" y="-20" width="68" height="40"/>
+            <use id="jCash2" href="#cash" x="-34" y="-20" width="68" height="40"/>
+            <g id="jRewardLabel">
+              <rect x="-80" y="-18" width="160" height="32" rx="16" fill="#FFF4E3" stroke="#D9A441" stroke-width="2"/>
+              <text x="0" y="4" text-anchor="middle" class="j-mono j-bold" fill="#1E2F5C">+ creator rewards</text>
+            </g>
+            <g id="jBought">
+              <rect x="-46" y="-16" width="92" height="30" rx="15" fill="#B3262E"/>
+              <text x="0" y="5" text-anchor="middle" class="j-mono j-bold" fill="#FFF4E3">Bought!</text>
+            </g>
+
+            <!-- the gift (local coords: bottom-centre = 0,0) -->
+            <g id="jGift">
+              <ellipse id="jGiftShadow" cx="0" cy="3" rx="66" ry="8" fill="#000" opacity=".1"/>
+              <rect x="-55" y="-96" width="110" height="96" rx="7" fill="#8E6A3A"/>
+              <use id="jToy" href="#toy-bear" x="-45" y="-90" width="90" height="90"/>
+              <g clip-path="url(#boxClip)">
+                <rect x="-55" y="-96" width="110" height="96" fill="#E9D3AE"/>
+                <path d="M-55 -88h110" stroke="#CDB389" stroke-width="3"/>
+                <rect id="jPaper" x="-55" y="-96" width="110" height="96" fill="url(#wrapPat)"/>
+                <rect id="jRibbonV" x="-8" y="-96" width="16" height="96" fill="#D9A441"/>
+                <rect id="jRibbonH" x="-55" y="-55" width="110" height="14" fill="#D9A441"/>
+              </g>
+              <g id="jTag">
+                <path d="M56 -40l30 -3 10 10 -10 11 -30 -3z" fill="#FFF4E3" stroke="#A9781F" stroke-width="2"/>
+                <circle cx="88" cy="-33" r="2.5" fill="#A9781F"/>
+                <text x="66" y="-28" class="j-tag" fill="#B3262E">♥</text>
+              </g>
+              <g id="jLid">
+                <g clip-path="url(#lidClip)">
+                  <rect x="-63" y="-122" width="126" height="28" fill="#DCC296"/>
+                  <rect id="jLidPaper" x="-63" y="-122" width="126" height="28" fill="url(#wrapPat)"/>
+                  <rect id="jLidRibbon" x="-8" y="-122" width="16" height="28" fill="#D9A441"/>
+                </g>
+                <g transform="translate(0 -122)"><g id="jBow">
+                  <path d="M0 0C-14-24-38-19-35-5c2 10 21 6 35 5zM0 0c14-24 38-19 35-5-2 10-21 6-35 5z" fill="#D9A441" stroke="#A9781F" stroke-width="2"/>
+                  <path d="M0 0l-11 21 6-2 5 5zM0 0l11 21-6-2-5 5z" fill="#B98522"/>
+                  <circle r="7" fill="#F2C66B" stroke="#A9781F" stroke-width="2"/>
+                </g></g>
+              </g>
+            </g>
+
+            <g id="jFx"></g>
+          </svg>
+          </div>
+          <p class="stage__caption" id="journeyCaption" aria-live="polite">Someone trades <b>$TOY</b> on pump.fun…</p>
+        </div>
+
+        <ol class="jsteps" id="jsteps">
+          <li data-step="0"><b>01</b>Trade → coin</li>
+          <li data-step="1"><b>02</b>donate.gg → $</li>
+          <li data-step="2"><b>03</b>$ → a gift</li>
+          <li data-step="3"><b>04</b>Delivered</li>
+          <li data-step="4"><b>05</b>A kid’s Christmas</li>
+        </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TRACKER ============ -->
+    <section class="tracker" id="tracker">
+      <div class="stars" aria-hidden="true"></div>
+      <div class="wrap">
+        <header class="section-head section-head--light">
+          <p class="kicker">Live gift tracker</p>
+          <h2 class="split">Santa’s ledger,<br /><em>but on-chain.</em></h2>
+          <p class="section-sub">Read straight from Solana mainnet — the pump.fun bonding curve, creator vaults, PumpSwap pool and fee-sharing config of the $TOY contract. No backend. Nothing to trust. Just math.</p>
+        </header>
+
+        <div class="tracker__status" id="trkStatus" role="status">
+          <span class="pulse"></span><span class="tracker__status-text">Waiting for the contract address — the tracker goes live the moment $TOY launches.</span>
+        </div>
+
+        <div class="stats">
+          <article class="stat stat--big">
+            <p class="stat__label">Creator rewards generated</p>
+            <p class="stat__value"><span data-stat="total">0.000</span><small>SOL</small></p>
+            <p class="stat__usd" data-usd="total">—</p>
+          </article>
+          <article class="stat stat--gold">
+            <p class="stat__label">Delivered to charity</p>
+            <p class="stat__value"><span data-stat="delivered">0.000</span><small>SOL</small></p>
+            <p class="stat__usd" data-usd="delivered">—</p>
+          </article>
+          <article class="stat">
+            <p class="stat__label">Still under the tree <span class="tip" tabindex="0" data-tip="Creator rewards accrued on-chain but not paid out yet. They get swept to the charity wallet on the next distribution.">?</span></p>
+            <p class="stat__value"><span data-stat="pending">0.000</span><small>SOL</small></p>
+            <p class="stat__usd" data-usd="pending">—</p>
+          </article>
+          <article class="stat stat--green">
+            <p class="stat__label">≈ Toys funded <span class="tip" tabindex="0" data-tip="Estimate: delivered USD value ÷ $25 average toy.">?</span></p>
+            <p class="stat__value"><span data-stat="toys">0</span><small>toys</small></p>
+            <p class="stat__usd">and counting</p>
+          </article>
+        </div>
+
+        <div class="ribbon-meter">
+          <div class="ribbon-meter__head">
+            <span>Delivered vs. generated</span>
+            <span data-stat="pct">0%</span>
+          </div>
+          <div class="ribbon-meter__bar"><i class="ribbon-meter__fill" id="meterFill"></i><b class="ribbon-meter__bow" id="meterBow"></b></div>
+        </div>
+
+        <div class="ledger">
+          <div class="ledger__col">
+            <h3>Latest deliveries</h3>
+            <ol class="ledger__list" id="ledgerList">
+              <li class="ledger__empty">No deliveries yet — the first sleigh leaves after launch.</li>
+            </ol>
+          </div>
+          <div class="ledger__col ledger__col--meta">
+            <h3>Verify it yourself</h3>
+            <dl class="ledger__meta" id="ledgerMeta">
+              <div><dt>Contract</dt><dd data-meta="mint">—</dd></div>
+              <div><dt>Creator vault</dt><dd data-meta="vault">—</dd></div>
+              <div><dt>Fee-sharing config</dt><dd data-meta="sharing">—</dd></div>
+              <div><dt>Beneficiaries</dt><dd data-meta="holders">—</dd></div>
+              <div><dt>Stage</dt><dd data-meta="stage">—</dd></div>
+              <div><dt>Last update</dt><dd data-meta="updated">—</dd></div>
+            </dl>
+            <form class="inspect" id="inspectForm">
+              <label for="inspectInput">Inspect any pump.fun mint</label>
+              <div class="inspect__row">
+                <input id="inspectInput" type="text" placeholder="Paste a mint address…" autocomplete="off" spellcheck="false" />
+                <button class="btn btn--gold btn--sm" type="submit">Check</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HOW IT WORKS ============ -->
+    <section class="how" id="how">
+      <div class="wrap">
+        <header class="section-head">
+          <p class="kicker">How it works</p>
+          <h2 class="split">From a trade<br />to a <em>toy box.</em></h2>
+        </header>
+
+        <div class="how__track">
+          <svg class="how__ribbon" viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true">
+            <path id="howRibbon" d="M10 150 C 160 20, 260 210, 400 110 S 640 10, 800 120 S 1060 210, 1190 70" />
+          </svg>
+          <ol class="steps">
+            <li class="step">
+              <span class="step__num">01</span>
+              <div class="step__icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 34l10-10 7 7 15-15"/><path d="M30 16h10v10"/></svg></div>
+              <h3>Trade $TOY</h3>
+              <p>Every buy and sell on pump.fun — and on PumpSwap after graduation — pays a small protocol-level creator fee.</p>
+            </li>
+            <li class="step">
+              <span class="step__num">02</span>
+              <div class="step__icon"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="18" width="32" height="22" rx="3"/><path d="M6 12h36v6H6zM24 12v28M24 12c-4-8-12-6-10-1 1 2 6 1 10 1zM24 12c4-8 12-6 10-1-1 2-6 1-10 1z"/></svg></div>
+              <h3>Rewards accrue</h3>
+              <p>That fee piles up in on-chain creator vaults set up as a pump.fun Charity Coin — pointed at donate.gg, not a dev wallet.</p>
+            </li>
+            <li class="step">
+              <span class="step__num">03</span>
+              <div class="step__icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 30c8 0 10-12 18-12s10 12 18 12"/><circle cx="24" cy="18" r="4"/><path d="M10 38h28"/></svg></div>
+              <h3>donate.gg routes it</h3>
+              <p>donate.gg claims the rewards, converts the SOL and passes the donation on to the charity.</p>
+            </li>
+            <li class="step">
+              <span class="step__num">04</span>
+              <div class="step__icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6l5 11 12 1-9 8 3 12-11-7-11 7 3-12-9-8 12-1z"/></svg></div>
+              <h3>Kids unwrap it</h3>
+              <p>Toys for Tots turns it into new toys for children who might otherwise wake up to nothing on Christmas morning.</p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CHARITY ============ -->
+    <section class="charity" id="charity">
+      <canvas class="snow" data-density="0.45"></canvas>
+      <div class="wrap charity__grid">
+        <div class="charity__copy">
+          <p class="kicker kicker--gold">The charity</p>
+          <h2 class="split">For the kids who<br />aren’t on <em>anyone’s</em> list.</h2>
+          <p>Since <strong>1947</strong>, the U.S. Marine Corps Reserve has run <strong>Toys for Tots</strong> — collecting new, unwrapped toys and handing them to children in need in communities across the country.</p>
+          <p>It’s one of the most efficient charities out there: they report that <strong>over 97% of donations go straight to the mission</strong> of putting toys, books and gifts into small hands.</p>
+          <div class="charity__ctas">
+            <a class="btn btn--cream magnetic" data-link="charity" href="#" target="_blank" rel="noopener">Visit toysfortots.org</a>
+            <a class="btn btn--ghost-light magnetic" data-link="donate" href="#" target="_blank" rel="noopener">View on donate.gg</a>
+          </div>
+          <p class="fine">Toycoin is an independent community project. It is not affiliated with, sponsored or endorsed by the Marine Toys for Tots Foundation or the U.S. Marine Corps. Donations are processed by donate.gg.</p>
+        </div>
+
+        <div class="toybox" aria-hidden="true">
+          <!-- hand-built toy illustrations -->
+          <svg class="toy toy--train" viewBox="0 0 220 120"><rect x="10" y="40" width="90" height="50" rx="8" fill="#B3262E"/><rect x="20" y="15" width="40" height="30" rx="4" fill="#D9A441"/><rect x="100" y="55" width="60" height="35" rx="6" fill="#FFF4E3"/><rect x="160" y="55" width="50" height="35" rx="6" fill="#D9A441"/><rect x="28" y="50" width="22" height="18" rx="3" fill="#FFF4E3"/><circle cx="35" cy="98" r="13" fill="#1E2F5C"/><circle cx="80" cy="98" r="13" fill="#1E2F5C"/><circle cx="130" cy="98" r="11" fill="#1E2F5C"/><circle cx="185" cy="98" r="11" fill="#1E2F5C"/><circle cx="35" cy="98" r="4" fill="#D9A441"/><circle cx="80" cy="98" r="4" fill="#D9A441"/><circle cx="130" cy="98" r="4" fill="#D9A441"/><circle cx="185" cy="98" r="4" fill="#D9A441"/><path d="M100 72h10M150 72h12" stroke="#1E2F5C" stroke-width="4"/></svg>
+          <svg class="toy toy--rocket" viewBox="0 0 120 200"><path d="M60 8c30 28 34 80 24 124H36C26 88 30 36 60 8z" fill="#FFF4E3"/><path d="M60 8c13 12 21 28 24 46H36c3-18 11-34 24-46z" fill="#B3262E"/><circle cx="60" cy="82" r="14" fill="#1E2F5C" stroke="#D9A441" stroke-width="5"/><path d="M36 110L14 150l26-8zM84 110l22 40-26-8z" fill="#B3262E"/><path d="M46 132h28l-6 30h-16z" fill="#D9A441"/><path d="M52 162c2 14 14 14 16 0z" fill="#D9A441" opacity=".7"/></svg>
+          <svg class="toy toy--drum" viewBox="0 0 160 150"><ellipse cx="80" cy="40" rx="62" ry="20" fill="#FFF4E3"/><path d="M18 40v70c0 11 28 20 62 20s62-9 62-20V40c0 11-28 20-62 20S18 51 18 40z" fill="#B3262E"/><path d="M18 60l25 55M60 60l-17 66M60 60l30 69M100 60l-10 70M100 60l30 60M142 60l-12 60" stroke="#D9A441" stroke-width="5" fill="none"/><path d="M18 106c0 11 28 20 62 20s62-9 62-20" stroke="#1F5A3D" stroke-width="10" fill="none"/><path d="M40 6l40 30M126 2l-40 34" stroke="#1E2F5C" stroke-width="6" stroke-linecap="round"/></svg>
+          <svg class="toy toy--duck" viewBox="0 0 150 130"><path d="M20 70c0-10 30-6 46-4 4-30 20-48 44-44s28 34 10 48c20 4 26 20 16 36-12 18-90 20-108 4C16 100 14 84 20 70z" fill="#D9A441"/><path d="M128 44l20 4-18 10z" fill="#B3262E"/><circle cx="108" cy="40" r="6" fill="#1E2F5C"/><path d="M50 84c16 12 40 10 54-2" stroke="#B37E25" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
+          <svg class="toy toy--gift" viewBox="0 0 160 160"><rect x="16" y="60" width="128" height="90" rx="8" fill="#1F5A3D"/><rect x="8" y="40" width="144" height="28" rx="6" fill="#23694A"/><rect x="70" y="40" width="20" height="110" fill="#D9A441"/><path d="M80 40c-20-34-52-24-40-6 6 8 26 6 40 6zM80 40c20-34 52-24 40-6-6 8-26 6-40 6z" fill="#D9A441"/></svg>
+          <svg class="toy toy--ball" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" fill="#FFF4E3"/><path d="M60 6a54 54 0 0 1 0 108" fill="#B3262E"/><path d="M6 60h108" stroke="#1E2F5C" stroke-width="8"/><circle cx="60" cy="60" r="14" fill="#D9A441" stroke="#1E2F5C" stroke-width="6"/></svg>
+          <img class="toy toy--bear" src="assets/logo.jpg" alt="" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TOKENOMICS ============ -->
+    <section class="tokenomics" id="tokenomics">
+      <div class="wrap">
+        <header class="section-head">
+          <p class="kicker">Tokenomics</p>
+          <h2 class="split">No fine print.<br />Just <em>gift tags.</em></h2>
+        </header>
+        <ul class="tags">
+          <li class="tag tag--red"><span class="tag__hole"></span><p class="tag__k">Ticker</p><p class="tag__v">$TOY</p></li>
+          <li class="tag tag--cream"><span class="tag__hole"></span><p class="tag__k">Total supply</p><p class="tag__v">1,000,000,000</p></li>
+          <li class="tag tag--green"><span class="tag__hole"></span><p class="tag__k">Launch</p><p class="tag__v">Fair launch<br /><small>on pump.fun</small></p></li>
+          <li class="tag tag--gold"><span class="tag__hole"></span><p class="tag__k">Creator rewards</p><p class="tag__v">100%<br /><small>to Toys for Tots</small></p></li>
+          <li class="tag tag--navy"><span class="tag__hole"></span><p class="tag__k">Chain</p><p class="tag__v">Solana</p></li>
+          <li class="tag tag--cream"><span class="tag__hole"></span><p class="tag__k">Presale / team tax</p><p class="tag__v">None</p></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ COUNTDOWN ============ -->
+    <section class="countdown" id="countdown">
+      <canvas class="snow" data-density="0.7"></canvas>
+      <div class="wrap countdown__inner">
+        <p class="kicker kicker--gold">Christmas morning is in</p>
+        <div class="doors" id="doors">
+          <div class="door"><b data-cd="d">00</b><span>days</span></div>
+          <div class="door"><b data-cd="h">00</b><span>hours</span></div>
+          <div class="door"><b data-cd="m">00</b><span>minutes</span></div>
+          <div class="door"><b data-cd="s">00</b><span>seconds</span></div>
+        </div>
+        <p class="countdown__line">Every trade before then is a toy under somebody’s tree.</p>
+        <a class="btn btn--gold magnetic" data-link="pump" href="#" target="_blank" rel="noopener">Wrap a gift — buy $TOY</a>
+      </div>
+    </section>
+
+    <!-- ============ FAQ ============ -->
+    <section class="faq" id="faq">
+      <div class="wrap faq__grid">
+        <header class="section-head">
+          <p class="kicker">FAQ</p>
+          <h2 class="split">Questions<br /><em>before</em> unwrapping.</h2>
+        </header>
+        <div class="faq__list">
+          <details>
+            <summary>Where exactly do the creator rewards go?</summary>
+            <p>$TOY launches on pump.fun as a Charity Coin through donate.gg. The creator rewards every trade generates accrue on-chain and are paid out to donate.gg, which processes the donation to Toys for Tots. Nothing is routed to a team wallet.</p>
+          </details>
+          <details>
+            <summary>How does the tracker get its numbers?</summary>
+            <p>Your browser reads Solana directly. It derives the $TOY bonding curve, creator vault, PumpSwap pool and fee-sharing config from the contract address, adds up the rewards still waiting on-chain, and scans payout transactions to total what has already been delivered. Every address is linked so you can check it on Solscan.</p>
+          </details>
+          <details>
+            <summary>Is Toycoin affiliated with Toys for Tots?</summary>
+            <p>No. Toycoin is an independent community project. The Marine Toys for Tots Foundation does not endorse, sponsor or operate $TOY. We simply chose them as the beneficiary.</p>
+          </details>
+          <details>
+            <summary>Does donate.gg take a cut?</summary>
+            <p>donate.gg charges a processing fee on Charity Coin donations — check their FAQ for the current rate. The tracker shows what leaves the $TOY vaults; the charity-side total is visible on donate.gg.</p>
+          </details>
+          <details>
+            <summary>Is this an investment?</summary>
+            <p>No. $TOY is a memecoin with no intrinsic value or expectation of financial return. Only spend what you’d happily put under a tree and never see again.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="wrap footer__inner">
+      <div class="footer__brand">
+        <img src="assets/logo.jpg" alt="" width="64" height="64" />
+        <p class="footer__word">Toycoin</p>
+        <p class="footer__tag">Every trade wraps a gift.</p>
+      </div>
+      <nav class="footer__links" aria-label="Footer">
+        <a data-link="pump" href="#" target="_blank" rel="noopener">pump.fun</a>
+        <a data-link="donate" href="#" target="_blank" rel="noopener">donate.gg</a>
+        <a data-link="x" href="#" target="_blank" rel="noopener">X / Twitter</a>
+      </nav>
+    </div>
+    <p class="footer__legal wrap">$TOY is a memecoin with no intrinsic value or expectation of financial return. Not financial advice. Toycoin is not affiliated with the Marine Toys for Tots Foundation, the U.S. Marine Corps, pump.fun or donate.gg. © 2026 Toycoin.</p>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.98.0/lib/index.iife.min.js"></script>
+  <script src="js/tracker.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/journey.js"></script>
+  <script type="module" src="js/coin.js"></script>
+</body>
+</html>
