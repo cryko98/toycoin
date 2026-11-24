@@ -2,30 +2,48 @@
 
 **Every trade wraps a gift.** A Solana charity memecoin launched on pump.fun as a donate.gg Charity Coin — 100% of the creator rewards go to Toys for Tots.
 
-Static site, no build step: `index.html` + `css/` + `js/` + `assets/`. Deploy the folder as-is to Vercel, Netlify, GitHub Pages or any static host.
+- Site: `index.html`, `css/style.css`, `js/main.js` (motion), `js/coin.js` (3D coin), `js/journey.js` (scroll-driven gift journey), `js/meter.js` (gift-tracker client), assets in `assets/`.
+- API: `api/meter.js`, a Vercel serverless function (accounting core in `api/_lib/meter-core.js`, settings in `api/_lib/config.js`).
 
-## Before launch — edit `js/config.js`
+## Gift tracker — same model as the FoodCoin meal meter
 
-| Key | What to set |
-| --- | --- |
-| `mint` | The $TOY contract address (CA). Empty until launch → the site shows "drops at launch" and the tracker waits. |
-| `rpc` | A browser-friendly Solana RPC **with transaction history**, e.g. a free Helius key: `https://mainnet.helius-rpc.com/?api-key=…`. Without it the site falls back to publicnode, which can read live balances but not past payouts. `api.mainnet-beta.solana.com` blocks browsers (403). |
-| `beneficiaries` | Optional. If the fee-sharing config has several shareholders, list the charity wallet(s) so only their share counts as "delivered". |
-| `links.donate` | The donate.gg page of the coin / beneficiary. |
-| `links.x` | The project's X account. |
-| `usdPerToy` | Used for the "≈ toys funded" estimate and the journey animation (default $25). |
+Two sources, never mixed:
 
-## The live tracker (`js/tracker.js`)
+| Shown as | Source | Counted? |
+| --- | --- | --- |
+| **Delivered to Toys for Tots** ($) | donate.gg public receipts for the charity, filtered to the $TOY mint, `settled` (receipt + parent), USDC settlement, Pump Fees source, wSOL input, valid settlement tx. Summed **net** of donate.gg's fee with `BigInt`. | ✅ the only "delivered" number |
+| **≈ Toys funded** | `floor(sum(usdNetE6) / ($25 × 1e6))` — one floor after summing. No live SOL price. | ✅ (derived) |
+| **Sent to donate.gg** (SOL) | on-chain `total_donated` counter of the coin's Pump Fees donation account | ❌ on its way |
+| **Still under the tree** (SOL) | creator vault + PumpSwap vault + donation account balance (finalized reads) | ❌ on its way |
 
-Runs entirely in the visitor's browser over Solana JSON-RPC, using the account layouts from pump.fun's public IDLs ([pump-fun/pump-public-docs](https://github.com/pump-fun/pump-public-docs)):
+- The donate.gg config a receipt must carry is read from the coin's own donation account on-chain (or pinned with `DONATE_CONFIG_ID`).
+- Every page of receipts is read before publishing; receipts are deduplicated by receipt id (batched settlements share one tx); already-counted receipts must stay present and unchanged, otherwise the last good reading stays published.
+- Chain failures never block the settled total and vice versa. RPC failover with redacted errors.
+- The browser only calls the same-origin `/api/meter` (cached 30 s at the edge).
 
-- **Still under the tree (pending)** = pump creator vault balance (minus rent) + PumpSwap creator vault (wSOL) + creator fees still parked on the bonding curve / pool.
-- **Delivered to charity** = sum of SOL that landed in the beneficiary wallet(s) in payout transactions (`DistributeCreatorFees`, `CollectCreatorFee`, …) of the creator vault. Results are cached per visitor in `localStorage`, so later visits only fetch new transactions.
-- **Generated** = delivered + paid to others + pending.
+Verified against a live Toys for Tots charity coin (Nov 24, 2026): the on-chain `total_donated` (51.719532802 SOL) equals the summed SOL of its 5 settled receipts exactly, and the on-chain config id matches the receipts.
 
-Fee-sharing (Charity Coin) setups are detected automatically: if the bonding curve's `creator` is the `sharing-config` PDA, its shareholders are read and shown.
+## Before launch
 
-## Notes
+1. **Vercel → Environment Variables:** `TOY_MINT` = the $TOY contract address. Optional: `SOLANA_RPC_URLS` (e.g. add a Helius URL as backup), `DONATE_API_KEY`, `DONATE_CONFIG_ID`, `DONATE_CHARITY_ID`.
+2. **`js/config.js`:** the same `mint` (drives the CA pill and the pump.fun buy links) and `links.x`.
 
-- Toys for Tots was **not found on donate.gg's charity directory** (Nov 2026). It must be added (donate.gg → "Request a charity") before the coin can name it as a beneficiary.
-- Toycoin is an independent community project, not affiliated with the Marine Toys for Tots Foundation, the U.S. Marine Corps, pump.fun or donate.gg.
+Until `TOY_MINT` is set the tracker shows "waiting for the contract address".
+
+The beneficiary is **Marine Toys for Tots Foundation** on donate.gg (`1756826b-8b9b-5f09-a95c-98ff34592a89`, listed as `ACTIVE_NOT_ONBOARDED`). Its settled receipts show donate.gg deducting a 20% processing fee on Charity Coin donations.
+
+## Run locally
+
+```bash
+npm install
+npm run dev        # site + /api/meter on http://localhost:5173
+npm test
+```
+
+Preview the tracker with real data from another coin: `TOY_MINT=<mint> npm run dev`.
+
+## Deploy
+
+Vercel: import the repo — the static site and the `/api/meter` function deploy together. A static-only host (GitHub Pages) would serve the page, but the tracker needs the `/api` function.
+
+Toycoin is an independent community project, not affiliated with the Marine Toys for Tots Foundation, the U.S. Marine Corps, pump.fun or donate.gg.

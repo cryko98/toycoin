@@ -1,0 +1,17 @@
+{
+  "name": "toycoin-site",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Toycoin ($TOY) website with the server-side gift meter (/api/meter).",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node tools/dev-server.js",
+    "test": "node --test \"api/**/*.test.js\""
+  },
+  "dependencies": {
+    "@solana/addresses": "2.1.0"
+  }
+}

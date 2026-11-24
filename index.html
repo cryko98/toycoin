@@ -321,7 +321,7 @@
         <header class="section-head section-head--light">
           <p class="kicker">Live gift tracker</p>
           <h2 class="split">Santa’s ledger,<br /><em>but on-chain.</em></h2>
-          <p class="section-sub">Read straight from Solana mainnet — the pump.fun bonding curve, creator vaults, PumpSwap pool and fee-sharing config of the $TOY contract. No backend. Nothing to trust. Just math.</p>
+          <p class="section-sub">“Delivered” only counts donations that donate.gg has actually <strong>settled to Toys for Tots</strong> — net of donate.gg’s fee, in the dollars they were settled at. Creator rewards still on their way are shown separately, straight from Solana. No live SOL price, so a dump can’t shrink a single counted toy.</p>
         </header>
 
         <div class="tracker__status" id="trkStatus" role="status">
@@ -330,59 +330,54 @@
 
         <div class="stats">
           <article class="stat stat--big">
-            <p class="stat__label">Creator rewards generated</p>
-            <p class="stat__value"><span data-stat="total">0.000</span><small>SOL</small></p>
-            <p class="stat__usd" data-usd="total">—</p>
-          </article>
-          <article class="stat stat--gold">
-            <p class="stat__label">Delivered to charity</p>
-            <p class="stat__value"><span data-stat="delivered">0.000</span><small>SOL</small></p>
-            <p class="stat__usd" data-usd="delivered">—</p>
-          </article>
-          <article class="stat">
-            <p class="stat__label">Still under the tree <span class="tip" tabindex="0" data-tip="Creator rewards accrued on-chain but not paid out yet. They get swept to the charity wallet on the next distribution.">?</span></p>
-            <p class="stat__value"><span data-stat="pending">0.000</span><small>SOL</small></p>
-            <p class="stat__usd" data-usd="pending">—</p>
+            <p class="stat__label">Delivered to Toys for Tots <span class="tip" tabindex="0" data-tip="Sum of donate.gg receipts settled to Toys for Tots for $TOY, net of donate.gg’s processing fee. Nothing pending is included.">?</span></p>
+            <p class="stat__value"><span data-stat="delivered">$0</span></p>
+            <p class="stat__usd" data-sub="delivered">—</p>
           </article>
           <article class="stat stat--green">
-            <p class="stat__label">≈ Toys funded <span class="tip" tabindex="0" data-tip="Estimate: delivered USD value ÷ $25 average toy.">?</span></p>
+            <p class="stat__label">≈ Toys funded <span class="tip" tabindex="0" data-tip="Estimate: settled net dollars ÷ $25 average toy. Toys for Tots buys and distributes the toys.">?</span></p>
             <p class="stat__value"><span data-stat="toys">0</span><small>toys</small></p>
-            <p class="stat__usd">and counting</p>
+            <p class="stat__usd" data-sub="toys">at $25 per toy</p>
+          </article>
+          <article class="stat stat--gold">
+            <p class="stat__label">Sent to donate.gg <span class="tip" tabindex="0" data-tip="SOL the $TOY donation account has already handed to donate.gg (on-chain counter). It becomes “delivered” once donate.gg converts and settles it.">?</span></p>
+            <p class="stat__value"><span data-stat="sent">0.000</span><small>SOL</small></p>
+            <p class="stat__usd" data-sub="sent">on-chain total</p>
+          </article>
+          <article class="stat">
+            <p class="stat__label">Still under the tree <span class="tip" tabindex="0" data-tip="Creator rewards sitting in the $TOY creator vaults and donation account, waiting for the next payout. Shown, never counted.">?</span></p>
+            <p class="stat__value"><span data-stat="pending">0.000</span><small>SOL</small></p>
+            <p class="stat__usd" data-sub="pending">waiting for the next payout</p>
           </article>
         </div>
 
         <div class="ribbon-meter">
           <div class="ribbon-meter__head">
-            <span>Delivered vs. generated</span>
+            <span>Settled to the charity vs. all creator rewards so far</span>
             <span data-stat="pct">0%</span>
           </div>
           <div class="ribbon-meter__bar"><i class="ribbon-meter__fill" id="meterFill"></i><b class="ribbon-meter__bow" id="meterBow"></b></div>
+          <p class="ribbon-meter__lock" id="meterLock" hidden></p>
         </div>
 
         <div class="ledger">
           <div class="ledger__col">
-            <h3>Latest deliveries</h3>
+            <h3>Latest settlements</h3>
             <ol class="ledger__list" id="ledgerList">
-              <li class="ledger__empty">No deliveries yet — the first sleigh leaves after launch.</li>
+              <li class="ledger__empty">No settlements yet — the first sleigh leaves after launch.</li>
             </ol>
           </div>
           <div class="ledger__col ledger__col--meta">
             <h3>Verify it yourself</h3>
             <dl class="ledger__meta" id="ledgerMeta">
               <div><dt>Contract</dt><dd data-meta="mint">—</dd></div>
-              <div><dt>Creator vault</dt><dd data-meta="vault">—</dd></div>
+              <div><dt>Settled donations</dt><dd data-meta="receipts">—</dd></div>
+              <div><dt>donate.gg fees (excluded)</dt><dd data-meta="fees">—</dd></div>
               <div><dt>Fee-sharing config</dt><dd data-meta="sharing">—</dd></div>
-              <div><dt>Beneficiaries</dt><dd data-meta="holders">—</dd></div>
-              <div><dt>Stage</dt><dd data-meta="stage">—</dd></div>
+              <div><dt>Donation account</dt><dd data-meta="donation">—</dd></div>
+              <div><dt>Creator vaults</dt><dd data-meta="vaults">—</dd></div>
               <div><dt>Last update</dt><dd data-meta="updated">—</dd></div>
             </dl>
-            <form class="inspect" id="inspectForm">
-              <label for="inspectInput">Inspect any pump.fun mint</label>
-              <div class="inspect__row">
-                <input id="inspectInput" type="text" placeholder="Paste a mint address…" autocomplete="off" spellcheck="false" />
-                <button class="btn btn--gold btn--sm" type="submit">Check</button>
-              </div>
-            </form>
           </div>
         </div>
       </div>
@@ -507,7 +502,7 @@
           </details>
           <details>
             <summary>How does the tracker get its numbers?</summary>
-            <p>Your browser reads Solana directly. It derives the $TOY bonding curve, creator vault, PumpSwap pool and fee-sharing config from the contract address, adds up the rewards still waiting on-chain, and scans payout transactions to total what has already been delivered. Every address is linked so you can check it on Solscan.</p>
+            <p>Two sources, never mixed. <strong>Delivered</strong> comes only from donate.gg’s public receipts that are <em>settled</em> to Toys for Tots for $TOY — counted net of donate.gg’s fee, at the dollar value they settled at, so the SOL price can’t move it. <strong>Sent to donate.gg</strong> and <strong>still under the tree</strong> are read from Solana: the coin’s fee-sharing config, creator vaults and Pump Fees donation account. Every address and settlement transaction is linked so you can check it on Solscan.</p>
           </details>
           <details>
             <summary>Is Toycoin affiliated with Toys for Tots?</summary>
@@ -515,7 +510,7 @@
           </details>
           <details>
             <summary>Does donate.gg take a cut?</summary>
-            <p>donate.gg charges a processing fee on Charity Coin donations — check their FAQ for the current rate. The tracker shows what leaves the $TOY vaults; the charity-side total is visible on donate.gg.</p>
+            <p>Yes. donate.gg deducts a processing fee before it settles the donation to the charity — 20% on recent Toys for Tots Charity Coin receipts. The tracker shows that fee separately and never counts it as delivered.</p>
           </details>
           <details>
             <summary>Is this an investment?</summary>
@@ -549,8 +544,7 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.98.0/lib/index.iife.min.js"></script>
-  <script src="js/tracker.js"></script>
+  <script src="js/meter.js"></script>
   <script src="js/main.js"></script>
   <script src="js/journey.js"></script>
   <script type="module" src="js/coin.js"></script>
