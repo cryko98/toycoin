@@ -2,7 +2,7 @@
 /*
  * Server-side settings for the gift meter. Every value can be overridden with a Vercel env var.
  *
- *   TOY_MINT          $TOY contract address (empty until launch → the meter reports "awaiting launch")
+ *   TOY_MINT          $TOY contract address (empty → the meter reports "awaiting launch")
  *   DONATE_CHARITY_ID donate.gg charity id of the beneficiary (default: Marine Toys for Tots Foundation)
  *   DONATE_CONFIG_ID  optional: pin the donate.gg donation config (0x… hex). Normally it is read from the
  *                     coin's own Pump Fees donation account on-chain, so you don't need to set it.

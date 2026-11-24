@@ -23,12 +23,12 @@ Two sources, never mixed:
 
 Verified against a live Toys for Tots charity coin (Nov 24, 2026): the on-chain `total_donated` (51.719532802 SOL) equals the summed SOL of its 5 settled receipts exactly, and the on-chain config id matches the receipts.
 
-## Before launch
+## Launch settings
 
 1. **Vercel → Environment Variables:** `TOY_MINT` = the $TOY contract address. Optional: `SOLANA_RPC_URLS` (e.g. add a Helius URL as backup), `DONATE_API_KEY`, `DONATE_CONFIG_ID`, `DONATE_CHARITY_ID`.
 2. **`js/config.js`:** the same `mint` (drives the CA pill and the pump.fun buy links) and `links.x`.
 
-Until `TOY_MINT` is set the tracker shows "waiting for the contract address".
+With an empty mint the tracker shows "waiting for the contract address".
 
 The beneficiary is **Marine Toys for Tots Foundation** on donate.gg (`1756826b-8b9b-5f09-a95c-98ff34592a89`, listed as `ACTIVE_NOT_ONBOARDED`). Its settled receipts show donate.gg deducting a 20% processing fee on Charity Coin donations.
 
