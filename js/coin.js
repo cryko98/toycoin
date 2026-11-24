@@ -25,34 +25,67 @@ function paintFace(logo) {
   gold.addColorStop(0, "#F6D488"); gold.addColorStop(0.55, "#D9A441"); gold.addColorStop(1, "#9C6C1A");
   g.fillStyle = gold; g.fillRect(0, 0, S, S);
 
-  // fine guilloché rings on the band
-  g.strokeStyle = "rgba(110, 70, 10, .22)"; g.lineWidth = 2;
-  for (let r = C * 0.83; r < C * 0.99; r += 9) { g.beginPath(); g.arc(C, C, r, 0, Math.PI * 2); g.stroke(); }
+  // Lettering band geometry (fractions of the face radius). The raised rim ring
+  // covers roughly the outer 7%, so the text lives between ~0.79 and ~0.91.
+  const BAND_IN = 0.775, TEXT_R = 0.85, MEDAL = 0.765;
 
-  // engraved lettering around the band
-  const text = "TOYCOIN  ✦  $TOY  ✦  EVERY TRADE WRAPS A GIFT  ✦  ";
-  g.font = "700 50px 'Fraunces', Georgia, serif";
-  g.fillStyle = "#5E1016";
+  // darker, matte band behind the letters so they read against the gold
+  g.beginPath(); g.arc(C, C, C * 0.925, 0, Math.PI * 2); g.arc(C, C, C * BAND_IN, 0, Math.PI * 2, true);
+  const band = g.createLinearGradient(0, 0, S, S);
+  band.addColorStop(0, "#E4B456"); band.addColorStop(1, "#B9852A");
+  g.fillStyle = band; g.fill("evenodd");
+  g.lineWidth = 3; g.strokeStyle = "rgba(94, 16, 22, .55)";
+  g.beginPath(); g.arc(C, C, C * 0.925, 0, Math.PI * 2); g.stroke();
+
+  // engraved lettering laid out along the arc with measured glyph widths
+  const STAR = "*";
+  const parts = ["TOYCOIN", STAR, "$TOY", STAR, "EVERY TRADE WRAPS A GIFT", STAR];
+  g.font = "800 58px 'Inter Tight', 'Segoe UI', Arial, sans-serif";
   g.textAlign = "center"; g.textBaseline = "middle";
-  const R = C * 0.905, chars = [...text], step = (Math.PI * 2) / chars.length;
-  chars.forEach((ch, i) => {
-    const a = -Math.PI / 2 + i * step;
-    g.save(); g.translate(C + Math.cos(a) * R, C + Math.sin(a) * R); g.rotate(a + Math.PI / 2);
-    g.fillText(ch, 0, 0); g.restore();
+  const R = C * TEXT_R, circ = Math.PI * 2 * R, STAR_W = 46, GAP = 26;
+  const glyphs = [];
+  parts.forEach((p) => {
+    if (p === STAR) glyphs.push({ star: true, w: STAR_W });
+    else [...p].forEach((ch) => glyphs.push({ ch, w: ch === " " ? 22 : g.measureText(ch).width }));
+  });
+  const used = glyphs.reduce((s, x) => s + x.w, 0);
+  const track = Math.max(2, (circ - used) / glyphs.length); // spread evenly to close the ring
+  const drawStar = (r) => {
+    g.beginPath();
+    for (let k = 0; k < 10; k++) {
+      const rr = k % 2 ? r * 0.45 : r, a = -Math.PI / 2 + (k * Math.PI) / 5;
+      g.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
+    }
+    g.closePath(); g.fill();
+  };
+  let pos = 0;
+  glyphs.forEach((gl) => {
+    const a = -Math.PI / 2 + ((pos + gl.w / 2) / circ) * Math.PI * 2;
+    pos += gl.w + track;
+    if (gl.ch === " ") return;
+    g.save();
+    g.translate(C + Math.cos(a) * R, C + Math.sin(a) * R);
+    g.rotate(a + Math.PI / 2);
+    // engraving: light lower edge, then the dark letter
+    g.fillStyle = "rgba(255, 236, 190, .85)";
+    g.save(); g.translate(0, 3); gl.star ? drawStar(17) : g.fillText(gl.ch, 0, 0); g.restore();
+    g.fillStyle = "#5A0E14";
+    gl.star ? drawStar(17) : g.fillText(gl.ch, 0, 0);
+    g.restore();
   });
 
   // inner bevel
-  g.beginPath(); g.arc(C, C, C * 0.815, 0, Math.PI * 2);
-  g.lineWidth = 16; g.strokeStyle = "#8A5C12"; g.stroke();
-  g.beginPath(); g.arc(C, C, C * 0.8, 0, Math.PI * 2);
+  g.beginPath(); g.arc(C, C, C * (BAND_IN + 0.012), 0, Math.PI * 2);
+  g.lineWidth = 14; g.strokeStyle = "#8A5C12"; g.stroke();
+  g.beginPath(); g.arc(C, C, C * (MEDAL + 0.004), 0, Math.PI * 2);
   g.lineWidth = 6; g.strokeStyle = "#F8DA92"; g.stroke();
 
   // logo medallion
-  g.save(); g.beginPath(); g.arc(C, C, C * 0.79, 0, Math.PI * 2); g.clip();
-  const inset = S * 0.105;
-  g.drawImage(logo, inset - S * 0.03, inset - S * 0.02, S - inset * 2 + S * 0.06, S - inset * 2 + S * 0.06);
+  g.save(); g.beginPath(); g.arc(C, C, C * MEDAL, 0, Math.PI * 2); g.clip();
+  const size = S * 0.82;
+  g.drawImage(logo, C - size / 2, C - size / 2 + 10, size, size);
   // soft vignette for depth
-  const vg = g.createRadialGradient(C, C, C * 0.5, C, C, C * 0.8);
+  const vg = g.createRadialGradient(C, C, C * 0.5, C, C, C * MEDAL);
   vg.addColorStop(0, "rgba(0,0,0,0)"); vg.addColorStop(1, "rgba(60,0,10,.35)");
   g.fillStyle = vg; g.fillRect(0, 0, S, S);
   g.restore();
@@ -90,7 +123,7 @@ async function init() {
   const fill = new THREE.PointLight(0xf2c66b, 18, 12); fill.position.set(-3, 2, 3); scene.add(fill);
   scene.add(new THREE.AmbientLight(0xffffff, 0.25));
 
-  try { await document.fonts.load("700 50px Fraunces"); } catch { /* fallback font */ }
+  try { await document.fonts.load("800 58px 'Inter Tight'"); } catch { /* fallback font */ }
   const logo = await loadImage("assets/logo.jpg");
   const faceCanvas = paintFace(logo);
 
@@ -105,8 +138,10 @@ async function init() {
     return t;
   };
   const faceMat = (tex) => new THREE.MeshPhysicalMaterial({
-    map: tex, metalness: 0.45, roughness: 0.32, clearcoat: 0.6, clearcoatRoughness: 0.25,
-    emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.14,
+    // lower metalness than the rim: keeps the engraved lettering readable instead
+    // of being washed out by environment reflections
+    map: tex, metalness: 0.25, roughness: 0.42, clearcoat: 0.35, clearcoatRoughness: 0.35,
+    emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.2,
   });
 
   const edgeTex = new THREE.CanvasTexture(paintEdge());
@@ -153,8 +188,12 @@ async function init() {
   let spin = 0.4, spinVel = IDLE, flipVel = 0, flip = 0, dragging = false, lastX = 0, lastY = 0, lastT = 0;
   let tiltX = 0, tiltY = 0, targetTX = 0, targetTY = 0;
   const hint = wrap.querySelector(".coin-hint");
+  // never let the browser start a native image/text drag here — it swallows the
+  // pointer events (ghost image appears, coin freezes mid-turn)
+  wrap.addEventListener("dragstart", (e) => e.preventDefault());
   wrap.addEventListener("pointerdown", (e) => {
     if (e.button !== undefined && e.button !== 0) return;
+    e.preventDefault();
     dragging = true; lastX = e.clientX; lastY = e.clientY; lastT = performance.now();
     spinVel = 0; flipVel = 0;
     wrap.setPointerCapture(e.pointerId);
@@ -182,6 +221,8 @@ async function init() {
     try { wrap.releasePointerCapture(e.pointerId); } catch { /* already released */ }
   };
   wrap.addEventListener("pointerup", end); wrap.addEventListener("pointercancel", end);
+  wrap.addEventListener("lostpointercapture", end);
+  addEventListener("blur", () => end({}));
   wrap.addEventListener("pointerleave", () => { if (!dragging) targetTX = targetTY = 0; });
 
   let visible = true;
@@ -198,9 +239,10 @@ async function init() {
       flipVel *= 0.94;
       spin += spinVel + sv;
       flip += flipVel;
-      // settle the flip axis to the nearest face (0 or π) once momentum dies
+      // once momentum dies, roll the flip axis back to the nearest full turn so
+      // the logo always ends upright (a half turn on X would leave it upside down)
       if (Math.abs(flipVel) < 0.004) {
-        const target = Math.round(flip / Math.PI) * Math.PI;
+        const target = Math.round(flip / (Math.PI * 2)) * Math.PI * 2;
         flip += (target - flip) * 0.05;
       }
     }
