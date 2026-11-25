@@ -13,7 +13,7 @@ window.TOY_CONFIG = {
     pump: "https://pump.fun",  // becomes pump.fun/coin/<mint> automatically when mint is set
     donate: "https://www.donate.gg/charities/marine-toys-for-tots-foundation",
     charity: "https://www.toysfortots.org/",
-    x: "https://x.com/",
+    x: "https://x.com/toycoinpf_",
   },
 
   // "≈ toys" estimate and the journey animation (keep in sync with usdPerToy on the server)
