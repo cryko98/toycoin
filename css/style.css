@@ -114,6 +114,7 @@ h2 em, h1 em { font-style: italic; font-weight: 500; font-variation-settings: "S
 .nav__links a:hover { background: rgba(255, 244, 227, .14); color: var(--cream); }
 .nav.is-solid .nav__links a { color: var(--navy); }
 .nav.is-solid .nav__links a:hover { background: rgba(179, 38, 46, .1); color: var(--red); }
+.nav__social { display: flex; gap: 8px; flex: none; }
 .nav__x { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: var(--cream); background: rgba(255, 244, 227, .14); transition: background .25s, color .25s, transform .3s var(--ease); }
 .nav__x svg { width: 16px; height: 16px; fill: currentColor; }
 .nav__x:hover { background: var(--cream); color: var(--red); transform: translateY(-1px); }
@@ -409,7 +410,8 @@ h2 em, h1 em { font-style: italic; font-weight: 500; font-variation-settings: "S
 @media (max-width: 900px) {
   .nav__links, .nav > .btn { display: none; }
   .nav__burger { display: block; margin-left: 8px; }
-  .nav__x { margin-left: auto; }
+  .nav__social { margin-left: auto; }
+  .nav { gap: 10px; }
   .hero__inner { grid-template-columns: minmax(0, 1fr); }
   .hero__copy { min-width: 0; }
   .hero__stage { max-width: 460px; width: 100%; margin: 10px auto 0; }

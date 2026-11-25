@@ -17,6 +17,7 @@ window.TOY_CONFIG = {
     donate: "https://www.donate.gg/charities/marine-toys-for-tots-foundation",
     charity: "https://www.toysfortots.org/",
     x: "https://x.com/toycoinpf_",
+    tiktok: "https://www.tiktok.com/@toycoinpf",
   },
 
   // "≈ toys" estimate and the journey animation (keep in sync with usdPerToy on the server)
