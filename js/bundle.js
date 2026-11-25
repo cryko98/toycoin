@@ -384,7 +384,9 @@ try {
     // Intro
     const intro = gsap.timeline({ defaults: { ease: "expo.out" } });
     intro
-      .from(".nav", { y: -30, opacity: 0, duration: 1 }, 0.1)
+      // explicit end values + clearProps: a .from() here would bake whatever transform the nav
+      // has at load (e.g. "hidden" after a mid-page reload) into a permanent inline style
+      .fromTo(".nav", { y: -30, opacity: 0 }, { y: 0, opacity: 1, duration: 1, clearProps: "all" }, 0.1)
       .from(".eyebrow", { y: 20, opacity: 0, duration: 1 }, 0.2)
       .from(".hero__title .w > span", { yPercent: 110, rotate: 4, duration: 1.3, stagger: 0.06 }, 0.25)
       .from(".hero__lede, .hero__ctas, .ca", { y: 26, opacity: 0, duration: 1.1, stagger: 0.08 }, 0.6)

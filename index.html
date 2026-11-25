@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=430d470e7c" />
+  <link rel="stylesheet" href="css/style.css?v=5359bea66f" />
   <script type="importmap">
     { "imports": {
       "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
@@ -40,11 +40,18 @@
       <a href="#tokenomics">Tokenomics</a>
       <a href="#faq">FAQ</a>
     </nav>
+    <a class="nav__x" data-link="x" href="#" target="_blank" rel="noopener" aria-label="Toycoin on X">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    </a>
     <a class="btn btn--gold btn--sm magnetic" data-link="pump" href="#" target="_blank" rel="noopener">Buy $TOY</a>
     <button class="nav__burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
   </header>
   <div class="drawer" id="drawer" hidden>
     <a href="#journey">Gift journey</a><a href="#tracker">Tracker</a><a href="#how">How it works</a><a href="#charity">The charity</a><a href="#tokenomics">Tokenomics</a><a href="#faq">FAQ</a>
+    <a class="drawer__x" data-link="x" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      Follow on X
+    </a>
   </div>
 
   <main id="main">
@@ -67,6 +74,9 @@
               Buy $TOY <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </a>
             <a class="btn btn--ghost magnetic" href="#tracker">Watch the gifts roll in</a>
+            <a class="btn btn--ghost btn--icon magnetic" data-link="x" href="#" target="_blank" rel="noopener" aria-label="Toycoin on X">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
           </div>
           <button class="ca" id="caPill" type="button" aria-label="Copy contract address">
             <span class="ca__label">CA</span>
@@ -544,6 +554,6 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
   <!-- one file: config + tracker + motion + journey + 3D coin (built by tools/bundle.js) -->
-  <script src="js/bundle.js?v=9c7395f9b2"></script>
+  <script src="js/bundle.js?v=3977b822c0"></script>
 </body>
 </html>
