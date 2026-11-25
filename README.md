@@ -5,6 +5,16 @@
 - Site: `index.html`, `css/style.css`, `js/main.js` (motion), `js/coin.js` (3D coin), `js/journey.js` (scroll-driven gift journey), `js/meter.js` (gift-tracker client), assets in `assets/`.
 - API: `api/meter.js`, a Vercel serverless function (accounting core in `api/_lib/meter-core.js`, settings in `api/_lib/config.js`).
 
+## Request budget (Vercel Hobby: 1M CDN requests / 30 days, shared by every project on the account)
+
+- The page loads **one** JS file, `js/bundle.js`, built from the sources above by `npm run bundle`.
+  **After editing any `js/*.js` file or `css/style.css`, run `npm run bundle`** — it rebuilds the bundle and stamps
+  content hashes (`?v=…`) into `index.html`. `npm test` fails if you forget.
+- `vercel.json` caches the hashed CSS/JS for a year and `assets/` for a week, so repeat visitors only re-request the HTML.
+  The favicon is inlined in the HTML.
+- First visit ≈ 4 requests (HTML, CSS, bundle, logo). The tracker calls `/api/meter` only while its section is on
+  screen and the tab is visible, once a minute (edge-cached for 60 s).
+
 ## Gift tracker — same model as the FoodCoin meal meter
 
 Two sources, never mixed:

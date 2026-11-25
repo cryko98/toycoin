@@ -3,8 +3,9 @@
    Gold coin with the Toycoin logo on both faces, reeded edge,
    raised rims, engraved rim lettering. Drag to spin, reacts to scroll.
 ===================================================================== */
-import * as THREE from "three";
-import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+// Loaded with dynamic import() (resolved through the page's import map) so this file can ship
+// inside the single classic-script bundle instead of costing an extra request as a module.
+let THREE, RoomEnvironment;
 
 const wrap = document.getElementById("coinWrap");
 const canvas = document.getElementById("coin");
@@ -101,6 +102,8 @@ function paintEdge() {
 }
 
 async function init() {
+  THREE = await import("three");
+  ({ RoomEnvironment } = await import("three/addons/environments/RoomEnvironment.js"));
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });

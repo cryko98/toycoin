@@ -130,7 +130,7 @@ module.exports = async function handler(req, res) {
   const body = JSON.stringify(payload());
   res.statusCode = 200;
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
-  res.setHeader('Cache-Control', 'public, max-age=10, s-maxage=30, stale-while-revalidate=120');
+  res.setHeader('Cache-Control', 'public, max-age=30, s-maxage=60, stale-while-revalidate=300');
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.end(req.method === 'HEAD' ? undefined : body);
 };

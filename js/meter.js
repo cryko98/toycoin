@@ -7,7 +7,7 @@
 (() => {
   "use strict";
   const API = "/api/meter";
-  const REFRESH_MS = 30000;
+  const REFRESH_MS = 60000;
   const TIMEOUT_MS = 12000;
   const $ = (s, c = document) => c.querySelector(s);
   const section = $("#tracker");
@@ -154,11 +154,16 @@
   }
   setInterval(updateStamp, 15000);
 
-  /* ---------- polling ---------- */
-  let busy = false;
-  async function load() {
-    if (busy || document.hidden) return;
+  /* ---------- polling ----------
+     Every /api/meter call is a CDN request on the hosting bill, so the tracker only asks while its
+     section is on (or near) the screen and the tab is visible — visitors who never scroll down to
+     it cost nothing, and an open-but-idle tab stops polling. */
+  let busy = false, near = false, lastFetch = 0;
+  async function load(force) {
+    if (busy || document.hidden || !near) return;
+    if (!force && Date.now() - lastFetch < REFRESH_MS - 1000) return;
     busy = true;
+    lastFetch = Date.now();
     const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
     try {
       const r = await fetch(API, { signal: ctrl.signal, headers: { Accept: "application/json" } });
@@ -169,8 +174,11 @@
       else if (!last) setStatus("Tracker unavailable right now — retrying.", "error");
     } finally { clearTimeout(timer); busy = false; }
   }
-  load();
-  setInterval(load, REFRESH_MS);
+  new IntersectionObserver(([e]) => {
+    near = e.isIntersecting;
+    if (near) load();                       // first view, or back after REFRESH_MS
+  }, { rootMargin: "600px 0px" }).observe(section);
+  setInterval(() => load(), REFRESH_MS);
   document.addEventListener("visibilitychange", () => { if (!document.hidden) load(); });
-  addEventListener("online", load);
+  addEventListener("online", () => load(true));
 })();
