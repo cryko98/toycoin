@@ -213,7 +213,7 @@
     });
 
     // Gift tags swing in on their strings
-    gsap.from(".tag", { rotateX: -80, rotate: (i) => (i % 2 ? 12 : -12), opacity: 0, transformOrigin: "50% -30px", duration: 1.6, ease: "elastic.out(1, .45)", stagger: 0.09, scrollTrigger: { trigger: ".tags", start: "top 80%" } });
+    gsap.from(".tag", { rotateX: -80, rotate: (i, el) => (el.classList.contains("tag--wide") ? -3 : i % 2 ? 12 : -12), opacity: 0, transformOrigin: "50% -30px", duration: 1.6, ease: "elastic.out(1, .45)", stagger: 0.09, scrollTrigger: { trigger: ".tags", start: "top 80%" } });
 
     // Advent doors
     gsap.from(".door", { rotateY: -90, transformOrigin: "left center", opacity: 0, duration: 1.2, ease: "expo.out", stagger: 0.1, scrollTrigger: { trigger: ".doors", start: "top 85%" } });
