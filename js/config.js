@@ -6,7 +6,7 @@
 window.TOY_CONFIG = {
   // Contract address (mint) of $TOY on pump.fun. Leave "" until launch.
   // Keep it identical to TOY_MINT on the server.
-  mint: "",
+  mint: "Fzx7qhj3JpYJSGWUMmZUhfM2p6evGSY3fsFRjgHFpump",
 
   // Links
   links: {

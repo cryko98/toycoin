@@ -117,6 +117,10 @@
       countTo("sent", Number(sent) / 1e9, sol3);
       countTo("pending", Number(vaults + donPending) / 1e9, sol3);
       $('[data-sub="sent"]').textContent = p.donation && p.donation.lastCrankAt ? `last hand-off ${ago(p.donation.lastCrankAt)}` : "on-chain total";
+      if (p.minted === false) {
+        $('[data-sub="sent"]').textContent = "starts at mint";
+        $('[data-sub="pending"]').textContent = "starts with the first trade";
+      }
       $('[data-meta="sharing"]').innerHTML = acct(p.accounts.sharing) + (p.locked ? " · locked" : "");
       $('[data-meta="donation"]').innerHTML = p.donation ? acct(p.donation.address) : "—";
       $('[data-meta="vaults"]').innerHTML = acct(p.accounts.creatorVault) + " · " + acct(p.accounts.pumpswapVault);

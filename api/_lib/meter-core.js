@@ -253,11 +253,21 @@ async function readChain(rpc, { mint = EXPECTED.mint, minContextSlot = 0 } = {})
   const a = await deriveAccounts(mint);
   const opts = { encoding: 'base64', commitment: 'finalized' };
   if (minContextSlot) opts.minContextSlot = minContextSlot;
-  const res = await rpc('getMultipleAccounts', [[a.sharing, a.curveVault, a.ammVault], opts]);
+  const res = await rpc('getMultipleAccounts', [[a.sharing, a.curveVault, a.ammVault, mint], opts]);
   const slot = res.context.slot;
   if (minContextSlot && slot < minContextSlot) throw new Error('stale snapshot');
-  const [sharingAcc, vaultAcc, ammAcc] = res.value;
+  const [sharingAcc, vaultAcc, ammAcc, mintAcc] = res.value;
   const b = acc => (acc ? Buffer.from(acc.data[0], 'base64') : null);
+
+  // Pre-mint: the token (and therefore every vault) doesn't exist yet. That's a true zero, not an
+  // error — report it as such so the page can say "goes live at mint" instead of "unavailable".
+  if (!mintAcc && !sharingAcc) {
+    return {
+      slot, minted: false, locked: false, shareBps: 0,
+      creatorVaultLamports: '0', ammVaultLamports: '0', donation: null, configIds: [],
+      accounts: { sharing: a.sharing, creatorVault: a.curveVault, pumpswapVault: a.ammVault }
+    };
+  }
 
   if (!sharingAcc || sharingAcc.owner !== PROGRAMS.fees || hex8(b(sharingAcc)) !== DISC.sharing) throw new Error('fee-sharing config not found');
   const sd = b(sharingAcc);
@@ -310,6 +320,7 @@ async function readChain(rpc, { mint = EXPECTED.mint, minContextSlot = 0 } = {})
 
   return {
     slot,
+    minted: true,
     locked,
     shareBps: donationBps,
     creatorVaultLamports: (creatorVault * share / 10000n).toString(),

@@ -150,6 +150,20 @@ test('derived accounts match the known on-chain addresses (verified on a live ch
   assert.equal(a.ammVault, '9E8GAvZYdxRezXDKp3KjWCAyjYhyFPJnaD11E7DiboZ8');
 });
 
+test('pre-mint: no token and no fee-sharing config reads as true zeros, not an error', async () => {
+  const rpc = async (method) => (method === 'getMultipleAccounts' ? { context: { slot: 5 }, value: [null, null, null, null] } : 0);
+  const c = await core.readChain(rpc, { mint: MINT });
+  assert.equal(c.minted, false);
+  assert.equal(c.creatorVaultLamports, '0');
+  assert.equal(c.donation, null);
+});
+
+test('minted coin without a fee-sharing config is still an error (misconfigured, not pre-mint)', async () => {
+  const mintAcc = { lamports: 1, owner: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb', data: ['', 'base64'] };
+  const rpc = async () => ({ context: { slot: 5 }, value: [null, null, null, mintAcc] });
+  await assert.rejects(core.readChain(rpc, { mint: MINT }), /fee-sharing config not found/);
+});
+
 test('bundled snapshot is valid and self-consistent', () => {
   const snap = require('../_data/settled-snapshot.json');
   const s = core.summarize(core.ledgerFromJson(snap.receipts));
