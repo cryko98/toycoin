@@ -363,7 +363,7 @@ h2 em, h1 em { font-style: italic; font-weight: 500; font-variation-settings: "S
 .tag--cream { --c: #fff; }
 .tag--wide { grid-column: 1 / -1; clip-path: polygon(48px 0, calc(100% - 48px) 0, 100% 28px, 100% 100%, 0 100%, 0 28px); }
 .tag--wide:hover, .tag--wide:nth-child(even):hover { rotate: -.6deg; }
-.tag--wide .tag__v small { display: inline-block; max-width: 34em; margin-top: 6px; }
+.tag--wide .tag__v small { display: inline-block; max-width: 34em; margin-top: 6px; text-wrap: balance; }
 
 /* ---------- countdown ---------- */
 .countdown { position: relative; overflow: hidden; background: radial-gradient(800px 500px at 50% 0%, #C9343C, transparent 70%), var(--red-deep); color: var(--cream); padding: clamp(90px, 12vw, 150px) 0; text-align: center; isolation: isolate; }
