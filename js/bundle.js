@@ -423,10 +423,18 @@ try {
     gsap.from(".step", { y: 80, opacity: 0, rotate: (i) => (i % 2 ? 3 : -3), duration: 1.2, ease: "expo.out", stagger: 0.12, scrollTrigger: { trigger: ".steps", start: "top 80%" } });
 
     // Charity toy box — float in + parallax
+    // Three layers of motion, each on its OWN transform property so they never overwrite each
+    // other frame-to-frame (that fight is what made the toys jump/glitch):
+    //   entrance → scale / rotation / opacity   (once)
+    //   parallax → yPercent                      (scrubbed by scroll)
+    //   float    → y                             (idle bob, absolute values)
     $$(".toy").forEach((t, i) => {
-      gsap.from(t, { scale: 0, rotate: (i % 2 ? 30 : -30), opacity: 0, duration: 1.3, ease: "back.out(1.6)", delay: i * 0.07, scrollTrigger: { trigger: ".toybox", start: "top 80%" } });
-      gsap.to(t, { y: (i % 3 - 1) * 70, rotate: (i % 2 ? 8 : -8), ease: "none", scrollTrigger: { trigger: ".charity", start: "top bottom", end: "bottom top", scrub: true } });
-      gsap.to(t, { y: "+=12", duration: 2.4 + i * 0.3, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 1.5 });
+      const tilt = i % 2 ? 4 : -4;
+      gsap.fromTo(t,
+        { scale: 0, rotation: tilt * 7, opacity: 0 },
+        { scale: 1, rotation: tilt, opacity: 1, duration: 1.3, ease: "back.out(1.6)", delay: i * 0.07, scrollTrigger: { trigger: ".toybox", start: "top 80%" } });
+      gsap.fromTo(t, { yPercent: 0 }, { yPercent: (i % 3 - 1) * 22, ease: "none", scrollTrigger: { trigger: ".charity", start: "top bottom", end: "bottom top", scrub: 0.6 } });
+      gsap.fromTo(t, { y: -6 }, { y: 6, duration: 2.4 + i * 0.3, repeat: -1, yoyo: true, ease: "sine.inOut" });
     });
 
     // Gift tags swing in on their strings
