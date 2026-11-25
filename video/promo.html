@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Toycoin — TikTok promo</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Inter+Tight:wght@500;700;800;900&family=JetBrains+Mono:wght@500;700&display=block" rel="stylesheet" />
+<style>
+:root {
+  --red: #B3262E; --red-deep: #7E1A20; --green: #1F5A3D; --green-deep: #133B27; --cream: #FFF4E3;
+  --gold: #D9A441; --gold-hi: #F6D488; --navy: #1E2F5C; --navy-deep: #0F1934; --ink: #131F40;
+  --f-display: "Fraunces", Georgia, serif; --f-body: "Inter Tight", Arial, sans-serif; --f-mono: "JetBrains Mono", monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+.stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--navy-deep); font-family: var(--f-body); color: var(--cream); }
+.scene { position: absolute; inset: 0; visibility: hidden; overflow: hidden; }
+.cam { position: absolute; inset: 0; transform-origin: 50% 45%; }
+.fill { position: absolute; inset: 0; }
+canvas#snow { position: absolute; inset: 0; z-index: 40; pointer-events: none; }
+.grain { position: absolute; inset: -50%; z-index: 41; opacity: .07; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.vignette { position: absolute; inset: 0; z-index: 39; pointer-events: none; background: radial-gradient(130% 90% at 50% 45%, transparent 55%, rgba(0,0,0,.55)); }
+#flash { position: absolute; inset: 0; z-index: 60; background: #fff; opacity: 0; pointer-events: none; }
+
+/* ---------- toy blocks (kinetic type) ---------- */
+.blocks { position: absolute; left: 0; right: 0; display: flex; justify-content: center; gap: 14px; }
+.blk { width: var(--s, 130px); height: var(--s, 130px); border-radius: calc(var(--s, 130px) * .14); display: grid; place-items: center; position: relative;
+  font: 900 calc(var(--s, 130px) * .62)/1 var(--f-display); font-variation-settings: "SOFT" 100, "WONK" 1;
+  box-shadow: inset 0 calc(var(--s,130px) * -.08) 0 rgba(0,0,0,.18), inset 0 4px 0 rgba(255,255,255,.3), 0 26px 40px -14px rgba(0,0,0,.55); }
+.blk::before { content: ""; position: absolute; inset: 9%; border-radius: 8%; border: 3px dashed rgba(255,255,255,.35); }
+.blk.sp { background: none !important; box-shadow: none; width: calc(var(--s, 130px) * .35); }
+.blk.sp::before { display: none; }
+.c0 { background: var(--gold); color: var(--red-deep); } .c1 { background: var(--green); color: var(--cream); }
+.c2 { background: var(--cream); color: var(--red); } .c3 { background: var(--red); color: var(--cream); }
+.c4 { background: var(--navy); color: var(--gold); }
+
+/* ---------- captions ---------- */
+#cap { position: absolute; left: 60px; right: 60px; top: 1330px; z-index: 50; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 30px;
+  font: 900 72px/1.08 var(--f-body); text-transform: uppercase; letter-spacing: -.01em; text-align: center; }
+#cap span { color: #fff; -webkit-text-stroke: 10px #0c1226; paint-order: stroke fill; display: inline-block; transform-origin: 50% 70%; }
+#cap span.on { color: var(--gold-hi); }
+
+/* ---------- 3D coin ---------- */
+.coin3d { position: absolute; width: 560px; height: 560px; transform-style: preserve-3d; }
+.coin3d .face, .coin3d .rim { position: absolute; inset: 0; border-radius: 50%; }
+.coin3d .face { backface-visibility: hidden; background: radial-gradient(circle at 35% 30%, #FBE3A6, #D9A441 55%, #9C6C1A); display: grid; place-items: center;
+  box-shadow: inset 0 0 0 10px #B98522, inset 0 0 0 16px #F2C66B; }
+.coin3d .face.back { transform: rotateY(180deg) translateZ(1px); }
+.coin3d .face.front { transform: translateZ(26px); }
+.coin3d .face.back { transform: rotateY(180deg) translateZ(26px); }
+.coin3d .medal { width: 74%; height: 74%; border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 10px #8A5C12, 0 0 0 16px #F8DA92; }
+.coin3d .medal img { width: 112%; height: 112%; margin: -6%; display: block; }
+.coin3d svg.rimtext { position: absolute; inset: 0; width: 100%; height: 100%; }
+.coin3d .rim { background: linear-gradient(90deg, #8A5C12, #F2C66B 30%, #B98522 60%, #F6D488 85%, #8A5C12); }
+.coin-glow { position: absolute; width: 900px; height: 900px; border-radius: 50%; background: radial-gradient(circle, rgba(246,212,136,.55), rgba(217,164,65,0) 65%); }
+
+/* ---------- gift box ---------- */
+.gbox { position: absolute; width: 520px; height: 600px; }
+.gbox .body { position: absolute; left: 0; right: 0; bottom: 0; height: 420px; border-radius: 22px; overflow: hidden;
+  background: repeating-linear-gradient(45deg, #B3262E 0 26px, #C8333B 26px 52px); box-shadow: 0 40px 70px -20px rgba(0,0,0,.6), inset 0 -18px 0 rgba(0,0,0,.15); }
+.gbox .lid { position: absolute; left: -30px; right: -30px; top: 110px; height: 110px; border-radius: 18px;
+  background: repeating-linear-gradient(45deg, #C8333B 0 26px, #B3262E 26px 52px); box-shadow: 0 18px 30px -12px rgba(0,0,0,.5); }
+.gbox .rv { position: absolute; left: 50%; width: 70px; margin-left: -35px; top: 110px; bottom: 0; background: linear-gradient(90deg, #B98522, #F6D488 45%, #D9A441); }
+.gbox .rh { position: absolute; left: 0; right: 0; height: 64px; bottom: 170px; background: linear-gradient(#F6D488, #D9A441 55%, #B98522); }
+.gbox .bow { position: absolute; left: 50%; top: 0; width: 300px; margin-left: -150px; }
+
+/* ---------- misc ---------- */
+.card { position: absolute; border-radius: 48px; background: linear-gradient(180deg, #24376A, #162447); box-shadow: 0 60px 120px -30px rgba(0,0,0,.7), inset 0 0 0 2px rgba(255,244,227,.1); }
+.pill { position: absolute; padding: 22px 38px; border-radius: 999px; font: 800 44px/1 var(--f-body); white-space: nowrap; }
+.label { font: 700 30px/1 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; }
+.big { font: 900 220px/0.9 var(--f-display); font-variation-settings: "SOFT" 100, "WONK" 1; letter-spacing: -.03em; }
+.photo { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.shade { position: absolute; inset: 0; }
+.toy { position: absolute; width: 170px; height: 170px; }
+.confetti i { position: absolute; left: 0; top: 0; display: block; }
+.stripes-red { background: repeating-linear-gradient(135deg, #B3262E 0 60px, #A0222A 60px 120px); }
+.stripes-green { background: repeating-linear-gradient(135deg, #1F5A3D 0 60px, #1A4F35 60px 120px); }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+
+  <!-- shared SVG symbols -->
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <symbol id="toy-bear" viewBox="0 0 100 100"><circle cx="26" cy="22" r="13" fill="#B37E25"/><circle cx="74" cy="22" r="13" fill="#B37E25"/><circle cx="26" cy="22" r="6" fill="#E9C48A"/><circle cx="74" cy="22" r="6" fill="#E9C48A"/><ellipse cx="50" cy="76" rx="30" ry="24" fill="#B37E25"/><circle cx="50" cy="40" r="27" fill="#C68C2E"/><ellipse cx="50" cy="49" rx="12" ry="9" fill="#F3DDB4"/><circle cx="50" cy="45" r="4" fill="#1E2F5C"/><circle cx="40" cy="35" r="3.2" fill="#1E2F5C"/><circle cx="60" cy="35" r="3.2" fill="#1E2F5C"/><path d="M44 53q6 5 12 0" stroke="#1E2F5C" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M38 66l12 6 12-6-12 9z" fill="#B3262E"/><ellipse cx="50" cy="80" rx="12" ry="10" fill="#E9C48A"/></symbol>
+      <symbol id="toy-train" viewBox="0 0 100 100"><rect x="6" y="40" width="52" height="34" rx="6" fill="#B3262E"/><rect x="12" y="22" width="24" height="22" rx="3" fill="#D9A441"/><rect x="58" y="50" width="36" height="24" rx="5" fill="#1F5A3D"/><rect x="16" y="47" width="14" height="12" rx="2" fill="#FFF4E3"/><rect x="42" y="30" width="10" height="12" fill="#1E2F5C"/><circle cx="20" cy="80" r="9" fill="#1E2F5C"/><circle cx="46" cy="80" r="9" fill="#1E2F5C"/><circle cx="76" cy="80" r="8" fill="#1E2F5C"/><circle cx="20" cy="80" r="3" fill="#D9A441"/><circle cx="46" cy="80" r="3" fill="#D9A441"/><circle cx="76" cy="80" r="3" fill="#D9A441"/></symbol>
+      <symbol id="toy-rocket" viewBox="0 0 100 100"><path d="M50 4c18 16 20 48 14 72H36C30 52 32 20 50 4z" fill="#FFF4E3"/><path d="M50 4c8 7 13 17 14 28H36c1-11 6-21 14-28z" fill="#B3262E"/><circle cx="50" cy="46" r="9" fill="#1E2F5C" stroke="#D9A441" stroke-width="3.5"/><path d="M36 62L22 86l16-5zM64 62l14 24-16-5z" fill="#B3262E"/><path d="M42 76h16l-4 18h-8z" fill="#D9A441"/></symbol>
+      <symbol id="toy-duck" viewBox="0 0 100 100"><path d="M10 58c0-8 22-5 34-3 3-22 15-36 33-33s21 26 7 36c15 3 20 15 12 27-9 14-68 15-81 3C8 80 6 68 10 58z" fill="#D9A441"/><path d="M86 34l12 4-11 8z" fill="#B3262E"/><circle cx="77" cy="34" r="4.5" fill="#1E2F5C"/><path d="M34 68c12 9 30 8 40-1" stroke="#B37E25" stroke-width="4" fill="none" stroke-linecap="round"/></symbol>
+      <symbol id="toy-gift" viewBox="0 0 100 100"><rect x="10" y="38" width="80" height="56" rx="6" fill="#1F5A3D"/><rect x="5" y="26" width="90" height="18" rx="4" fill="#23694A"/><rect x="44" y="26" width="12" height="68" fill="#D9A441"/><path d="M50 26c-12-20-32-14-24-3 4 5 16 3 24 3zM50 26c12-20 32-14 24-3-4 5-16 3-24 3z" fill="#D9A441"/></symbol>
+      <symbol id="coin" viewBox="-50 -50 100 100"><circle r="46" fill="#D9A441" stroke="#9C6C1A" stroke-width="5"/><circle r="34" fill="none" stroke="#F6D488" stroke-width="3"/><text y="14" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-weight="900" font-size="40" fill="#7E1A20">$</text></symbol>
+      <symbol id="bill" viewBox="-60 -34 120 68"><rect x="-58" y="-32" width="116" height="64" rx="10" fill="#DDEFD9" stroke="#1F5A3D" stroke-width="5"/><circle r="20" fill="#1F5A3D"/><text y="11" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-weight="900" font-size="30" fill="#DDEFD9">$</text></symbol>
+      <symbol id="bowsym" viewBox="-160 -110 320 200"><path d="M0 0C-50-90-150-80-140-20c8 40 90 30 140 20zM0 0c50-90 150-80 140-20-8 40-90 30-140 20z" fill="#D9A441" stroke="#9C6C1A" stroke-width="6"/><path d="M0 0l-40 80 22-6 18 20zM0 0l40 80-22-6-18 20z" fill="#B98522"/><circle r="26" fill="#F6D488" stroke="#9C6C1A" stroke-width="6"/></symbol>
+      <path id="rimPath" d="M280,280 m-236,0 a236,236 0 1,1 472,0 a236,236 0 1,1 -472,0" />
+    </defs>
+  </svg>
+
+  <!-- ================= S1 · HOOK ================= -->
+  <section class="scene" id="s1">
+    <div class="fill" style="background: radial-gradient(120% 80% at 50% 40%, #213A72 0%, #0F1934 60%, #090F22 100%)"></div>
+    <div class="cam" id="cam1">
+      <div class="blocks" id="b1a" style="top:250px; --s:150px"></div>
+      <div class="blocks" id="b1b" style="top:250px; --s:150px"></div>
+      <div class="card" id="chart" style="left:140px; top:520px; width:800px; height:640px; padding:56px 60px">
+        <div style="display:flex; justify-content:space-between; align-items:center">
+          <span class="label" style="color:rgba(255,244,227,.6)">MEMECOIN / SOL</span>
+          <span class="label" style="color:#4ADE80" id="pct">+0.0%</span>
+        </div>
+        <div id="candles" style="position:absolute; left:60px; right:60px; bottom:70px; height:420px"></div>
+        <svg id="pline" viewBox="0 0 680 420" style="position:absolute; left:60px; bottom:70px; width:680px; height:420px; overflow:visible">
+          <polyline points="0,380 85,330 170,350 255,260 340,280 425,170 510,190 595,90 680,30" fill="none" stroke="#F6D488" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+        </svg>
+      </div>
+      <div class="gbox" id="gift1" style="left:280px; top:560px">
+        <div class="body"></div><div class="rv"></div><div class="rh"></div><div class="lid"></div>
+        <svg class="bow" viewBox="-160 -110 320 200"><use href="#bowsym" x="-160" y="-110" width="320" height="200"/></svg>
+      </div>
+      <div class="confetti" id="conf1" style="position:absolute; left:540px; top:700px"></div>
+    </div>
+  </section>
+
+  <!-- ================= S2 · MEET $TOY ================= -->
+  <section class="scene" id="s2">
+    <div class="fill stripes-red"></div>
+    <div class="fill" style="background: radial-gradient(70% 45% at 50% 38%, rgba(246,212,136,.35), transparent 70%), linear-gradient(180deg, rgba(126,26,32,.2), rgba(70,10,15,.65))"></div>
+    <div class="cam" id="cam2">
+      <div class="label" id="meet" style="position:absolute; top:190px; width:100%; text-align:center; color:var(--gold-hi); font-size:40px">MEET</div>
+      <div class="coin-glow" style="left:90px; top:120px"></div>
+      <div style="position:absolute; left:260px; top:290px; perspective:1600px; width:560px; height:560px">
+        <div class="coin3d" id="coin2">
+          <div class="rim" style="transform: translateZ(0)"></div>
+          <div class="face front"><svg class="rimtext" viewBox="0 0 560 560"><text font-family="Inter Tight, Arial" font-weight="900" font-size="30" letter-spacing="6" fill="#5A0E14"><textPath href="#rimPath">TOYCOIN ★ $TOY ★ EVERY TRADE WRAPS A GIFT ★ TOYCOIN ★</textPath></text></svg><div class="medal"><img src="../assets/logo.jpg" /></div></div>
+          <div class="face back"><svg class="rimtext" viewBox="0 0 560 560"><text font-family="Inter Tight, Arial" font-weight="900" font-size="30" letter-spacing="6" fill="#5A0E14"><textPath href="#rimPath">TOYCOIN ★ $TOY ★ EVERY TRADE WRAPS A GIFT ★ TOYCOIN ★</textPath></text></svg><div class="medal"><img src="../assets/logo.jpg" /></div></div>
+        </div>
+      </div>
+      <div class="blocks" id="b2" style="top:900px; --s:150px"></div>
+      <div class="pill" id="chip1" style="left:120px; top:1110px; background:var(--cream); color:var(--red)">♥ Charity coin</div>
+      <div class="pill" id="chip2" style="left:560px; top:1110px; background:var(--navy); color:var(--gold-hi)">◎ Solana</div>
+      <div class="pill" id="chip3" style="left:330px; top:1215px; background:var(--gold); color:var(--navy-deep)">pump.fun 🚀</div>
+    </div>
+  </section>
+
+  <!-- ================= S3 · TRADE → REWARD ================= -->
+  <section class="scene" id="s3">
+    <div class="fill" style="background: radial-gradient(100% 70% at 50% 35%, #1F5A3D, #0E2A1C 75%)"></div>
+    <div class="cam" id="cam3">
+      <div class="card" id="phone" style="left:190px; top:230px; width:700px; height:1000px; border-radius:70px; padding:70px 56px; background:linear-gradient(180deg,#24376A,#121D3D)">
+        <div class="label" style="color:rgba(255,244,227,.55)">$TOY / SOL</div>
+        <div style="font:900 96px/1 var(--f-display); margin-top:16px" id="price">0.000041</div>
+        <div id="candles3" style="position:absolute; left:56px; right:56px; top:300px; height:380px"></div>
+        <div style="position:absolute; left:56px; right:56px; bottom:70px; display:flex; gap:24px">
+          <div id="buy" style="flex:1; height:130px; border-radius:36px; background:#22C55E; display:grid; place-items:center; font:900 56px/1 var(--f-body); color:#062b14">BUY</div>
+          <div id="sell" style="flex:1; height:130px; border-radius:36px; background:#E0565E; display:grid; place-items:center; font:900 56px/1 var(--f-body); color:#3b0a0e">SELL</div>
+        </div>
+      </div>
+      <div id="coins3" style="position:absolute; left:540px; top:700px"></div>
+      <div class="pill" id="reward" style="left:190px; top:120px; width:700px; text-align:center; background:var(--gold); color:var(--navy-deep); font-size:50px">+ CREATOR REWARD</div>
+    </div>
+  </section>
+
+  <!-- ================= S4 · 100% → TOYS FOR TOTS ================= -->
+  <section class="scene" id="s4">
+    <div class="fill" style="background: radial-gradient(100% 70% at 50% 30%, #2A3F78, #0F1934 70%)"></div>
+    <div class="cam" id="cam4">
+      <div class="big" id="pct4" style="position:absolute; top:170px; width:100%; text-align:center; color:var(--gold-hi); font-size:330px">0%</div>
+      <div class="label" id="pct4l" style="position:absolute; top:520px; width:100%; text-align:center; color:var(--cream); font-size:38px">OF CREATOR REWARDS</div>
+      <div class="pill" id="dgg" style="left:300px; top:660px; width:480px; text-align:center; background:var(--cream); color:var(--navy)">♥ donate.gg</div>
+      <svg id="house" viewBox="360 210 240 270" style="position:absolute; left:250px; top:760px; width:580px; height:560px; overflow:visible">
+        <circle id="hglow" cx="480" cy="390" r="170" fill="#F2C66B" opacity="0"/>
+        <rect x="380" y="330" width="200" height="140" fill="#1F5A3D"/>
+        <path d="M366 338L480 262l114 76" stroke="#15402B" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="#23694A"/>
+        <path d="M480 230l7 15 16 2-12 11 3 16-14-8-14 8 3-16-12-11 16-2z" fill="#D9A441"/>
+        <rect x="398" y="346" width="164" height="30" rx="6" fill="#FFF4E3"/>
+        <text x="480" y="367" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="17" fill="#1F5A3D">TOYS FOR TOTS</text>
+        <rect x="396" y="396" width="40" height="38" rx="5" fill="#F2C66B"/><rect x="524" y="396" width="40" height="38" rx="5" fill="#F2C66B"/>
+        <rect x="455" y="400" width="50" height="70" rx="5" fill="#15402B"/>
+      </svg>
+      <div id="flow4" style="position:absolute; left:0; top:0"></div>
+    </div>
+  </section>
+
+  <!-- ================= S5 · REAL TOYS → WRAPPED → CHRISTMAS MORNING ================= -->
+  <section class="scene" id="s5">
+    <div class="photo" id="p5a" style="background-image:url(gen/img-toys.jpg)"></div>
+    <div class="shade" style="background: linear-gradient(180deg, rgba(15,25,52,.55), rgba(15,25,52,0) 30%, rgba(15,25,52,0) 60%, rgba(15,25,52,.65))"></div>
+    <div class="blocks" id="b5" style="top:200px; --s:140px; z-index:3"></div>
+    <!-- wrap-over: paper slides in, ribbons cross, bow pops, then the paper tears to reveal the next photo -->
+    <div id="wrap5" style="position:absolute; inset:0; z-index:5">
+      <div id="paperL" class="stripes-red" style="position:absolute; top:0; bottom:0; left:0; width:560px; clip-path:polygon(0 0,100% 0,96% 4%,100% 8%,96% 12%,100% 16%,96% 20%,100% 24%,96% 28%,100% 32%,96% 36%,100% 40%,96% 44%,100% 48%,96% 52%,100% 56%,96% 60%,100% 64%,96% 68%,100% 72%,96% 76%,100% 80%,96% 84%,100% 88%,96% 92%,100% 96%,96% 100%,0 100%)"></div>
+      <div id="paperR" class="stripes-red" style="position:absolute; top:0; bottom:0; right:0; width:560px; clip-path:polygon(4% 0,100% 0,100% 100%,4% 100%,0 96%,4% 92%,0 88%,4% 84%,0 80%,4% 76%,0 72%,4% 68%,0 64%,4% 60%,0 56%,4% 52%,0 48%,4% 44%,0 40%,4% 36%,0 32%,4% 28%,0 24%,4% 20%,0 16%,4% 12%,0 8%,4% 4%)"></div>
+      <div id="rib5v" style="position:absolute; left:480px; width:120px; top:0; bottom:0; background:linear-gradient(90deg,#B98522,#F6D488 45%,#D9A441)"></div>
+      <div id="rib5h" style="position:absolute; top:900px; height:120px; left:0; right:0; background:linear-gradient(#F6D488,#D9A441 55%,#B98522)"></div>
+      <svg id="bow5" viewBox="-160 -110 320 200" style="position:absolute; left:290px; top:790px; width:500px"><use href="#bowsym" x="-160" y="-110" width="320" height="200"/></svg>
+    </div>
+    <div class="photo" id="p5b" style="background-image:url(gen/img-unwrap.jpg); z-index:4"></div>
+    <div class="shade" id="p5bshade" style="z-index:4; background: linear-gradient(180deg, rgba(15,25,52,.5), rgba(15,25,52,0) 28%, rgba(15,25,52,0) 62%, rgba(15,25,52,.6))"></div>
+    <div class="blocks" id="b5b" style="top:200px; --s:110px; z-index:6"></div>
+  </section>
+
+  <!-- ================= S6 · LIVE TRACKER ================= -->
+  <section class="scene" id="s6">
+    <div class="fill" style="background: radial-gradient(100% 70% at 50% 25%, #23366B, #0B1430 70%)"></div>
+    <div class="cam" id="cam6">
+      <div class="label" id="ledgerk" style="position:absolute; top:170px; width:100%; text-align:center; color:var(--gold); font-size:34px">LIVE GIFT TRACKER</div>
+      <div style="position:absolute; top:225px; width:100%; text-align:center; font:700 92px/1 var(--f-display); font-variation-settings:'SOFT' 100" id="ledgerh">Santa’s ledger,<br/><em style="color:var(--gold-hi)">on-chain.</em></div>
+      <div class="card" id="trk" style="left:110px; top:520px; width:860px; height:700px; padding:60px">
+        <div style="display:flex; align-items:center; gap:18px" class="label"><span id="livedot" style="width:26px; height:26px; border-radius:50%; background:#4ADE80; box-shadow:0 0 0 0 rgba(74,222,128,.6)"></span><span style="color:#4ADE80" id="livetxt">LIVE</span><span style="color:rgba(255,244,227,.5)">· SOLANA MAINNET</span></div>
+        <div style="margin-top:44px; padding:40px 44px; border-radius:34px; background:linear-gradient(160deg,#B3262E,#7E1A20)">
+          <div class="label" style="font-size:26px; color:rgba(255,244,227,.8)">DELIVERED TO TOYS FOR TOTS</div>
+          <div style="display:flex; align-items:center; gap:18px; margin-top:26px; height:130px"><span style="font:900 130px/1 var(--f-display)">$</span><div id="odo" style="display:flex; gap:14px; align-items:center"></div></div><div class="label" style="font-size:24px; color:rgba(255,244,227,.75); margin-top:14px">settled donations · read live from donate.gg</div>
+        </div>
+        <div style="display:flex; gap:24px; margin-top:28px">
+          <div style="flex:1; padding:30px; border-radius:28px; background:rgba(255,244,227,.06)"><div class="label" style="font-size:22px; color:rgba(255,244,227,.6)">≈ TOYS FUNDED</div><div style="font:800 60px/1 var(--f-display); margin-top:14px; color:#7FD3A3">🧸 ✦ ✦</div></div>
+          <div style="flex:1; padding:30px; border-radius:28px; background:rgba(255,244,227,.06)"><div class="label" style="font-size:22px; color:rgba(255,244,227,.6)">FEE SPLIT</div><div style="font:800 52px/1 var(--f-display); margin-top:14px; color:var(--gold-hi)">🔒 100%</div></div>
+        </div>
+        <div style="margin-top:30px; height:34px; border-radius:99px; background:rgba(255,244,227,.08); overflow:hidden"><div id="meter6" style="height:100%; width:0; border-radius:99px; background:repeating-linear-gradient(135deg,#B3262E 0 18px,#FFF4E3 18px 36px)"></div></div>
+      </div>
+      <div class="pill" id="stamp" style="left:640px; top:470px; background:var(--gold); color:var(--navy-deep); font-size:40px; transform:rotate(8deg)">ON-CHAIN ✓</div>
+      <div id="coins6" style="position:absolute; left:540px; top:0"></div>
+    </div>
+  </section>
+
+  <!-- ================= S7 · 30 DAYS ================= -->
+  <section class="scene" id="s7">
+    <div class="photo" id="p7" style="background-image:url(gen/img-tree.jpg)"></div>
+    <div class="shade" style="background: linear-gradient(180deg, rgba(10,16,36,.75), rgba(10,16,36,.15) 45%, rgba(10,16,36,.7))"></div>
+    <div class="label" id="xmas" style="position:absolute; top:230px; width:100%; text-align:center; color:var(--gold-hi); font-size:40px">CHRISTMAS MORNING IN</div>
+    <div id="doors" style="position:absolute; top:320px; left:0; right:0; display:flex; justify-content:center; gap:30px; perspective:1400px">
+      <div class="door" style="width:300px; height:380px; border-radius:36px; background:linear-gradient(180deg,#FFF4E3,#F3E0C0); display:grid; place-items:center; color:var(--red); font:900 250px/1 var(--f-display); box-shadow:0 40px 60px -20px rgba(0,0,0,.6); transform-origin:left center">3</div>
+      <div class="door" style="width:300px; height:380px; border-radius:36px; background:linear-gradient(180deg,#FFF4E3,#F3E0C0); display:grid; place-items:center; color:var(--red); font:900 250px/1 var(--f-display); box-shadow:0 40px 60px -20px rgba(0,0,0,.6); transform-origin:left center">0</div>
+    </div>
+    <div class="label" id="days" style="position:absolute; top:740px; width:100%; text-align:center; color:var(--cream); font-size:64px; letter-spacing:.3em">DAYS</div>
+  </section>
+
+  <!-- ================= S8 · EVERY TRADE WRAPS A GIFT → END CARD ================= -->
+  <section class="scene" id="s8">
+    <div class="fill stripes-green"></div>
+    <div class="fill" style="background: radial-gradient(80% 50% at 50% 40%, rgba(246,212,136,.25), transparent 70%), linear-gradient(180deg, rgba(19,59,39,.2), rgba(8,30,18,.7))"></div>
+    <div class="cam" id="cam8">
+      <div class="blocks" id="b8a" style="top:230px; --s:120px"></div>
+      <div class="blocks" id="b8b" style="top:380px; --s:120px"></div>
+      <div id="end" style="position:absolute; inset:0; z-index:2">
+        <div class="coin-glow" style="left:90px; top:-10px"></div>
+        <div style="position:absolute; left:340px; top:230px; perspective:1600px; width:400px; height:400px">
+          <div class="coin3d" id="coin8" style="width:400px; height:400px">
+            <div class="rim"></div>
+            <div class="face front" style="transform:translateZ(20px)"><div class="medal"><img src="../assets/logo.jpg" /></div></div>
+            <div class="face back" style="transform:rotateY(180deg) translateZ(20px)"><div class="medal"><img src="../assets/logo.jpg" /></div></div>
+          </div>
+        </div>
+        <div id="endTitle" style="position:absolute; top:670px; width:100%; text-align:center; font:900 200px/0.9 var(--f-display); font-variation-settings:'SOFT' 100,'WONK' 1; color:var(--cream)">$TOY</div>
+        <div id="endSub" style="position:absolute; top:880px; width:100%; text-align:center; font:700 54px/1.2 var(--f-body); color:var(--gold-hi)">launching on pump.fun</div>
+        <div id="follow" style="position:absolute; left:190px; width:700px; top:1010px; height:150px; border-radius:999px; background:var(--cream); color:var(--red); display:flex; align-items:center; justify-content:center; gap:26px; font:900 56px/1 var(--f-body); box-shadow:0 30px 60px -20px rgba(0,0,0,.6)">
+          <svg viewBox="0 0 24 24" width="56" height="56" fill="#131F40"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.030-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+          @toycoinpf
+        </div>
+        <div id="fine" style="position:absolute; top:1210px; width:100%; text-align:center; font:500 26px/1.4 var(--f-body); color:rgba(255,244,227,.55)">Independent community project · not affiliated with Toys for Tots · not financial advice</div>
+      </div>
+      <div id="rain8" style="position:absolute; inset:0"></div>
+    </div>
+  </section>
+
+  <!-- ================= TRANSITIONS (top layer) ================= -->
+  <div id="ribbonT" style="position:absolute; z-index:30; left:-200px; top:760px; width:1480px; height:300px; background:linear-gradient(#F6D488,#D9A441 50%,#B98522); box-shadow:0 30px 60px rgba(0,0,0,.45)">
+    <svg viewBox="-160 -110 320 200" style="position:absolute; left:500px; top:-120px; width:480px"><use href="#bowsym" x="-160" y="-110" width="320" height="200"/></svg>
+  </div>
+  <div id="tearT" style="position:absolute; z-index:30; inset:0; visibility:hidden">
+    <div id="tearA" class="stripes-green" style="position:absolute; inset:0; clip-path:polygon(0 0,100% 0,100% 46%,92% 52%,84% 47%,76% 53%,68% 47%,60% 54%,52% 48%,44% 54%,36% 47%,28% 53%,20% 47%,12% 53%,4% 48%,0 52%)"></div>
+    <div id="tearB" class="stripes-green" style="position:absolute; inset:0; clip-path:polygon(0 52%,4% 48%,12% 53%,20% 47%,28% 53%,36% 47%,44% 54%,52% 48%,60% 54%,68% 47%,76% 53%,84% 47%,92% 52%,100% 46%,100% 100%,0 100%)"></div>
+  </div>
+
+  <div id="cap"></div>
+  <canvas id="snow" width="1080" height="1920"></canvas>
+  <div class="vignette"></div>
+  <div class="grain" id="grain"></div>
+  <div id="flash"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script>
+(async () => {
+  const $ = s => document.querySelector(s);
+  const $$ = s => [...document.querySelectorAll(s)];
+  const OFF = 0.3;            // voice-over starts here
+  const DURATION = 45;
+  const tl = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' } });
+
+  /* ---------- seeded randomness: every render is identical ---------- */
+  let seed = 20261225;
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const pick = a => a[Math.floor(rnd() * a.length)];
+
+  /* ---------- helpers ---------- */
+  const scene = (id, a, b) => { tl.set(id, { visibility: 'visible' }, a); if (b !== undefined) tl.set(id, { visibility: 'hidden' }, b); };
+  const flash = (at, o = .7) => tl.fromTo('#flash', { opacity: o }, { opacity: 0, duration: .35, ease: 'power2.out', immediateRender: false }, at);
+  const shake = (at, a = 16, sel = '.stage') => tl.to(sel, { keyframes: { x: [0, -a, a * .8, -a * .5, a * .3, 0], y: [0, a * .5, -a * .6, a * .3, -a * .2, 0] }, duration: .32, ease: 'none' }, at);
+  const W = (i) => OFF + words[i].s;     // time of word i
+
+  function blocks(el, text, colorOffset = 0) {
+    const box = $(el); box.innerHTML = '';
+    const want = parseFloat(getComputedStyle(box).getPropertyValue('--s')) || 130;
+    const letters = [...text].filter(c => c !== ' ').length, spaces = [...text].filter(c => c === ' ').length;
+    const fit = (1000 - ([...text].length - 1) * 14) / (letters + .35 * spaces);
+    box.style.setProperty('--s', Math.floor(Math.min(want, fit)) + 'px');
+    let ci = colorOffset;
+    return [...text].map(ch => {
+      const b = document.createElement('div');
+      if (ch === ' ') { b.className = 'blk sp'; box.appendChild(b); return null; }
+      b.className = 'blk c' + (ci++ % 5); b.textContent = ch; box.appendChild(b); return b;
+    }).filter(Boolean);
+  }
+  function dropBlocks(list, at, { stagger = .06, from = -1300 } = {}) {
+    list.forEach((b, i) => {
+      const r = (rnd() - .5) * 16;
+      tl.fromTo(b, { y: from, rotation: r * 3, opacity: 1 }, { y: 0, rotation: r, duration: .75, ease: 'bounce.out', immediateRender: false }, at + i * stagger);
+    });
+    tl.set(list, { opacity: 0 }, 0); tl.set(list, { opacity: 1 }, at);
+  }
+  function blowBlocks(list, at) {
+    list.forEach((b, i) => tl.to(b, { y: -1500 - rnd() * 400, x: (rnd() - .5) * 900, rotation: (rnd() - .5) * 220, duration: .55, ease: 'power3.in' }, at + i * .02));
+  }
+  function confetti(el, at, n = 70, spread = 700) {
+    const box = $(el);
+    const colors = ['#B3262E', '#D9A441', '#1F5A3D', '#FFF4E3', '#F6D488', '#1E2F5C'];
+    for (let i = 0; i < n; i++) {
+      const c = document.createElement('i');
+      const w = 14 + rnd() * 16, h = rnd() < .5 ? w : w * 2.2;
+      c.style.cssText = `width:${w}px;height:${h}px;background:${pick(colors)};border-radius:${rnd() < .3 ? '50%' : '3px'};opacity:0`;
+      box.appendChild(c);
+      const a = rnd() * Math.PI * 2, d = 180 + rnd() * spread;
+      tl.set(c, { opacity: 1, x: 0, y: 0, rotation: 0 }, at);
+      tl.to(c, { x: Math.cos(a) * d, y: Math.sin(a) * d * .8 - 260, rotation: (rnd() - .5) * 900, duration: .9, ease: 'power3.out' }, at);
+      tl.to(c, { y: `+=${700 + rnd() * 500}`, opacity: 0, duration: 1.4, ease: 'power1.in' }, at + .9);
+    }
+  }
+  function ribbonWipe(at) {      // gold ribbon with a bow sweeps across → hides the cut
+    tl.fromTo('#ribbonT', { xPercent: 0, x: -1700, scaleY: 1 }, { x: 0, duration: .32, ease: 'power3.in', immediateRender: false }, at - .32)
+      .to('#ribbonT', { scaleY: 7.5, duration: .18, ease: 'power2.in' }, at - .05)
+      .to('#ribbonT', { scaleY: 1, x: 1900, duration: .45, ease: 'power3.out' }, at + .14);
+  }
+  function tearWipe(at) {        // green wrapping paper closes, then tears open
+    tl.set('#tearT', { visibility: 'visible' }, at - .3)
+      .fromTo('#tearA', { yPercent: -100 }, { yPercent: 0, duration: .3, ease: 'power3.in', immediateRender: false }, at - .3)
+      .fromTo('#tearB', { yPercent: 100 }, { yPercent: 0, duration: .3, ease: 'power3.in', immediateRender: false }, at - .3)
+      .to('#tearA', { yPercent: -110, rotation: -4, duration: .5, ease: 'power3.out' }, at + .08)
+      .to('#tearB', { yPercent: 110, rotation: 3, duration: .5, ease: 'power3.out' }, at + .08)
+      .set('#tearT', { visibility: 'hidden' }, at + .6);
+  }
+  const camDrift = (sel, a, b, s = 1.07) => tl.fromTo(sel, { scale: 1 }, { scale: s, duration: b - a, ease: 'none', immediateRender: false }, a);
+
+  gsap.set('#ribbonT', { rotation: -14, x: -1900 });
+  // thick coin edge: stack of gold discs between the two faces
+  ['#coin2', '#coin8'].forEach(sel => {
+    const c = $(sel), half = sel === '#coin2' ? 24 : 18;
+    for (let z = -half; z <= half; z += 3) { const d = document.createElement('div'); d.className = 'rim'; d.style.transform = 'translateZ(' + z + 'px)'; c.insertBefore(d, c.firstChild); }
+  });
+
+  /* ---------- load word timings ---------- */
+  const words = await (await fetch('gen/words.json')).json();
+  const idx = w => words.findIndex(x => x.w.toLowerCase().replace(/[^a-z0-9%$-]/g, '') === w);
+  const at = (w, n = 0) => { let k = -1; for (let i = 0; i <= n; i++) k = words.findIndex((x, j) => j > k && x.w.toLowerCase().replace(/[^a-z0-9%$'-]/g, '') === w); return OFF + words[k].s; };
+
+  /* ================= S1 · HOOK (0 → 5) ================= */
+  const T1 = at('memecoin'), T2 = at('trade'), T3 = at('bought'), T4 = at('present');
+  scene('#s1', 0, 5.0);
+  camDrift('#cam1', 0, 5, 1.06);
+  // chart candles
+  const cbox = $('#candles');
+  const hs = [90, 150, 120, 210, 180, 280, 250, 340, 400];
+  hs.forEach((h, i) => {
+    const c = document.createElement('div');
+    c.style.cssText = `position:absolute;bottom:0;left:${i * 76}px;width:52px;height:${h}px;border-radius:10px;background:${i % 3 === 2 ? '#E0565E' : '#22C55E'};transform-origin:50% 100%;box-shadow:0 0 30px rgba(34,197,94,.35)`;
+    cbox.appendChild(c);
+    tl.fromTo(c, { scaleY: .12 }, { scaleY: 1, duration: .5, ease: 'back.out(2)' }, i * .12);
+  });
+  tl.fromTo('#chart', { y: 80, scale: .9, opacity: .85 }, { y: 0, scale: 1, opacity: 1, duration: .5 }, 0)
+    .to('#pline polyline', { strokeDashoffset: 0, duration: 1.5, ease: 'power2.inOut' }, .2);
+  const pct = { v: 0 };
+  tl.to(pct, { v: 1337, duration: 1.8, ease: 'power2.in', onUpdate: () => ($('#pct').textContent = '+' + pct.v.toFixed(1) + '%') }, .2);
+  const b1a = blocks('#b1a', '1 TRADE', 0);
+  dropBlocks(b1a, 0, { stagger: .05, from: -500 });
+  // chart collapses into a gift
+  tl.to('#candles > div', { scaleY: 0, duration: .25, ease: 'power3.in', stagger: .02 }, T3 - .45)
+    .to('#chart', { scale: .2, rotation: 25, opacity: 0, duration: .35, ease: 'power3.in' }, T3 - .25);
+  blowBlocks(b1a, T3 - .3);
+  tl.fromTo('#gift1', { y: -1500, rotation: -12 }, { y: 0, rotation: 0, duration: .75, ease: 'bounce.out', immediateRender: false }, T3 - .1);
+  tl.set('#gift1', { opacity: 0 }, 0).set('#gift1', { opacity: 1 }, T3 - .1);
+  tl.fromTo('#gift1 .bow', { scale: 0, rotation: -40 }, { scale: 1, rotation: 0, duration: .8, ease: 'elastic.out(1,.45)', immediateRender: false }, T4 - .1);
+  tl.set('#gift1 .bow', { scale: 0 }, 0);
+  const b1b = blocks('#b1b', '= 1 GIFT', 2);
+  dropBlocks(b1b, T3 + .25, { stagger: .07 });
+  confetti('#conf1', T4, 80, 650);
+  flash(T4, .45); shake(T3 + .55, 14);
+  tl.to('#gift1', { scale: 1.08, duration: .18, yoyo: true, repeat: 1, ease: 'power2.out' }, T4);
+
+  /* ================= S2 · MEET $TOY (5 → 12.5) ================= */
+  const S2 = 5.0;
+  ribbonWipe(S2);
+  scene('#s2', S2, 12.55);
+  camDrift('#cam2', S2, 12.55, 1.05);
+  tl.fromTo('#meet', { opacity: 0, y: 30, letterSpacing: '0.6em' }, { opacity: 1, y: 0, letterSpacing: '0.14em', duration: .8, immediateRender: false }, at('meet') - .05);
+  tl.fromTo('#coin2', { scale: .1, rotationY: -1440, rotationX: 30, y: 400 }, { scale: 1, rotationY: 0, rotationX: 0, y: 0, duration: 1.5, ease: 'expo.out', immediateRender: false }, S2 + .15);
+  tl.to('#coin2', { rotationY: 360 * 2, duration: 7.4, ease: 'none' }, S2 + 1.6);
+  tl.to('#coin2', { y: -18, duration: 1.2, yoyo: true, repeat: 5, ease: 'sine.inOut' }, S2 + 1.6);
+  const b2 = blocks('#b2', '$TOY', 0);
+  dropBlocks(b2, at('toy') - .15, { stagger: .08 });
+  flash(at('toy') + .45, .35); shake(at('toy') + .5, 12);
+  [['#chip1', at('charity')], ['#chip2', at('solana')], ['#chip3', at('pump')]].forEach(([c, t2], i) => {
+    tl.fromTo(c, { scale: 0, rotation: i % 2 ? 14 : -14, opacity: 0 }, { scale: 1, rotation: i % 2 ? 3 : -3, opacity: 1, duration: .6, ease: 'back.out(2.4)', immediateRender: false }, t2 - .05);
+  });
+  tl.set(['#chip1', '#chip2', '#chip3', '#meet'], { opacity: 0 }, 0);
+
+  /* ================= S3 · TRADE → CREATOR REWARD (12.5 → 16.9) ================= */
+  const S3 = 12.55;
+  tearWipe(S3);
+  scene('#s3', S3, at('and') - .05);
+  camDrift('#cam3', S3, 17, 1.06);
+  tl.fromTo('#phone', { y: 500, rotation: -6, scale: .85 }, { y: 0, rotation: 0, scale: 1, duration: .8, immediateRender: false }, S3 + .05);
+  const c3 = $('#candles3');
+  [120, 160, 140, 230, 200, 290, 260, 340].forEach((h, i) => {
+    const c = document.createElement('div');
+    c.style.cssText = `position:absolute;bottom:0;left:${i * 74}px;width:50px;height:${h}px;border-radius:10px;background:${i === 4 ? '#E0565E' : '#22C55E'};transform-origin:50% 100%`;
+    c3.appendChild(c);
+    tl.fromTo(c, { scaleY: 0 }, { scaleY: 1, duration: .45, ease: 'back.out(2)', immediateRender: false }, S3 + .3 + i * .09);
+  });
+  const price = { v: 41 };
+  tl.to(price, { v: 97, duration: 3.6, ease: 'power1.inOut', onUpdate: () => ($('#price').textContent = '0.0000' + Math.round(price.v)) }, S3 + .3);
+  tl.to('#buy', { scale: .88, duration: .1, yoyo: true, repeat: 1, ease: 'power2.inOut' }, at('buys'))
+    .to('#buy', { boxShadow: '0 0 0 18px rgba(34,197,94,.35)', duration: .2, yoyo: true, repeat: 1 }, at('buys'))
+    .to('#sell', { scale: .88, duration: .1, yoyo: true, repeat: 1, ease: 'power2.inOut' }, at('sells'))
+    .to('#sell', { boxShadow: '0 0 0 18px rgba(224,86,94,.35)', duration: .2, yoyo: true, repeat: 1 }, at('sells'));
+  // reward coins burst out of the phone
+  const cbx = $('#coins3');
+  const TP = at('pays');
+  for (let i = 0; i < 16; i++) {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '-50 -50 100 100'); s.setAttribute('width', 110); s.setAttribute('height', 110);
+    s.style.cssText = 'position:absolute;left:-55px;top:-55px;opacity:0';
+    s.innerHTML = '<use href="#coin" x="-50" y="-50" width="100" height="100"/>';
+    cbx.appendChild(s);
+    const a = -Math.PI / 2 + (rnd() - .5) * 2.4, d = 300 + rnd() * 380;
+    tl.set(s, { opacity: 1, x: 0, y: 0, scale: .3 }, TP + i * .03);
+    tl.to(s, { x: Math.cos(a) * d, y: Math.sin(a) * d, scale: .8 + rnd() * .5, rotation: (rnd() - .5) * 720, duration: .8, ease: 'power3.out' }, TP + i * .03);
+    tl.to(s, { y: '-=1300', x: '*=0.2', duration: .7, ease: 'power3.in' }, at('and') - .7 + i * .015);
+  }
+  tl.fromTo('#reward', { scale: 0, rotation: -8 }, { scale: 1, rotation: -2, duration: .6, ease: 'back.out(2.5)', immediateRender: false }, at('creator'));
+  tl.set('#reward', { scale: 0 }, 0);
+  flash(TP + .05, .3); shake(TP + .05, 10);
+
+  /* ================= S4 · 100% → donate.gg → TOYS FOR TOTS (16.9 → 21.4) ================= */
+  const S4 = at('and') - .05;
+  scene('#s4', S4, at('that') - .05);
+  camDrift('#cam4', S4, at('that'), 1.05);
+  const p4 = { v: 0 };
+  tl.fromTo('#pct4', { scale: 2.2, opacity: 0 }, { scale: 1, opacity: 1, duration: .5, immediateRender: false }, S4)
+    .to(p4, { v: 100, duration: .9, ease: 'power2.out', onUpdate: () => ($('#pct4').textContent = Math.round(p4.v) + '%') }, at('one'))
+    .to('#pct4', { scale: 1.12, duration: .15, yoyo: true, repeat: 1, ease: 'power2.out' }, at('percent') + .1)
+    .fromTo('#pct4l', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .5, immediateRender: false }, at('percent'));
+  tl.set(['#pct4l', '#dgg', '#house'], { opacity: 0 }, 0);
+  flash(at('percent') + .1, .35); shake(at('percent') + .1, 14);
+  tl.fromTo('#dgg', { opacity: 0, scale: .6 }, { opacity: 1, scale: 1, duration: .5, ease: 'back.out(2)', immediateRender: false }, at('goes'))
+    .fromTo('#house', { opacity: 0, y: 200, scale: .8 }, { opacity: 1, y: 0, scale: 1, duration: .7, ease: 'back.out(1.6)', immediateRender: false }, at('toys'))
+    .to('#hglow', { attr: { opacity: .55 }, duration: .4, yoyo: true, repeat: 3 }, at('through'));
+  // stream: coins in from the top → through donate.gg → bills into the house
+  const fl = $('#flow4');
+  for (let i = 0; i < 12; i++) {
+    const coin = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    coin.setAttribute('viewBox', '-50 -50 100 100'); coin.setAttribute('width', 90); coin.setAttribute('height', 90);
+    coin.style.cssText = 'position:absolute;left:-45px;top:-45px;opacity:0'; coin.innerHTML = '<use href="#coin" x="-50" y="-50" width="100" height="100"/>';
+    const bill = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    bill.setAttribute('viewBox', '-60 -34 120 68'); bill.setAttribute('width', 140); bill.setAttribute('height', 80);
+    bill.style.cssText = 'position:absolute;left:-70px;top:-40px;opacity:0'; bill.innerHTML = '<use href="#bill" x="-60" y="-34" width="120" height="68"/>';
+    fl.appendChild(coin); fl.appendChild(bill);
+    const t0 = at('through') - .3 + i * .12;
+    tl.set(coin, { opacity: 1, x: 200 + rnd() * 680, y: -100 }, t0)
+      .to(coin, { x: 540, y: 715, rotation: 540, duration: .55, ease: 'power2.in' }, t0)
+      .set(coin, { opacity: 0 }, t0 + .55)
+      .set(bill, { opacity: 1, x: 540, y: 715, rotation: 0, scale: .6 }, t0 + .55)
+      .to(bill, { x: 540 + (rnd() - .5) * 120, y: 1100, rotation: (rnd() - .5) * 40, scale: 1, duration: .5, ease: 'power2.in' }, t0 + .55)
+      .set(bill, { opacity: 0 }, t0 + 1.05);
+  }
+
+  /* ================= S5 · REAL TOYS → WRAPPED → MORNING (21.4 → 29.1) ================= */
+  const S5 = at('that') - .05, TW = at('wrapped');
+  ribbonWipe(S5);
+  scene('#s5', S5, at('and', 2) - .05);
+  tl.fromTo('#p5a', { scale: 1.25, yPercent: 4 }, { scale: 1.05, yPercent: -2, duration: TW - S5 + .4, ease: 'none', immediateRender: false }, S5);
+  const b5 = blocks('#b5', 'REAL TOYS', 0);
+  dropBlocks(b5, at('real') - .1, { stagger: .05 });
+  // wrap the whole screen like a present
+  tl.fromTo('#paperL', { xPercent: -101 }, { xPercent: 0, duration: .35, ease: 'power3.in', immediateRender: false }, TW - .25)
+    .fromTo('#paperR', { xPercent: 101 }, { xPercent: 0, duration: .35, ease: 'power3.in', immediateRender: false }, TW - .25)
+    .fromTo('#rib5v', { scaleY: 0 }, { scaleY: 1, transformOrigin: '50% 0%', duration: .25, ease: 'power3.out', immediateRender: false }, TW + .05)
+    .fromTo('#rib5h', { scaleX: 0 }, { scaleX: 1, transformOrigin: '0% 50%', duration: .25, ease: 'power3.out', immediateRender: false }, TW + .14)
+    .fromTo('#bow5', { scale: 0, rotation: -50 }, { scale: 1, rotation: 0, duration: .7, ease: 'elastic.out(1,.45)', immediateRender: false }, TW + .26);
+  tl.set(['#paperL', '#paperR'], { xPercent: 101 * -1 }, 0).set('#paperR', { xPercent: 101 }, 0).set('#rib5v', { scaleY: 0 }, 0).set('#rib5h', { scaleX: 0 }, 0).set('#bow5', { scale: 0 }, 0);
+  blowBlocks(b5, TW - .3);
+  flash(TW + .45, .4); shake(TW + .1, 12);
+  // tear open → Christmas morning photo
+  const TO = at('delivered') - .05;
+  tl.set(['#p5b', '#p5bshade'], { opacity: 0 }, 0).set(['#p5b', '#p5bshade'], { opacity: 1 }, TO);
+  tl.to('#bow5', { scale: 1.6, opacity: 0, duration: .3, ease: 'power2.in' }, TO - .05)
+    .to(['#rib5v', '#rib5h'], { opacity: 0, duration: .2 }, TO)
+    .to('#paperL', { xPercent: -105, rotation: -6, duration: .55, ease: 'power3.out' }, TO + .05)
+    .to('#paperR', { xPercent: 105, rotation: 6, duration: .55, ease: 'power3.out' }, TO + .05)
+    .set(['#bow5', '#rib5v', '#rib5h'], { opacity: 1 }, S5);
+  tl.fromTo('#p5b', { scale: 1.18 }, { scale: 1.02, duration: at('and', 2) - TO, ease: 'none', immediateRender: false }, TO);
+  const b5b = blocks('#b5b', 'CHRISTMAS', 3);
+  dropBlocks(b5b, at('christmas', 1) - .1, { stagger: .04 });
+
+  /* ================= S6 · LIVE TRACKER (29.1 → 34) ================= */
+  const S6 = at('and', 2) - .05;
+  tearWipe(S6);
+  scene('#s6', S6, at('christmas', 2) - .05);
+  camDrift('#cam6', S6, at('christmas', 2), 1.05);
+  tl.fromTo(['#ledgerk', '#ledgerh'], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .6, stagger: .1, immediateRender: false }, S6 + .1)
+    .fromTo('#trk', { y: 600, rotationX: 25, opacity: 0 }, { y: 0, rotationX: 0, opacity: 1, duration: .9, immediateRender: false }, S6 + .15);
+  tl.set(['#ledgerk', '#ledgerh', '#trk', '#stamp'], { opacity: 0 }, 0);
+  // "loading live" skeleton instead of digits: the promo never shows a made-up amount
+  const odo = $('#odo');
+  [150, 110, 150, 150, 110].forEach((w, i) => {
+    const bar = document.createElement('div');
+    bar.style.cssText = 'width:' + w + 'px;height:96px;border-radius:20px;background:linear-gradient(90deg,rgba(255,244,227,.18) 0%,rgba(255,244,227,.55) 50%,rgba(255,244,227,.18) 100%);background-size:300% 100%';
+    odo.appendChild(bar);
+    tl.fromTo(bar, { backgroundPosition: '100% 0' }, { backgroundPosition: '-200% 0', duration: 1.1, repeat: 4, ease: 'none', immediateRender: false }, S6 + .3 + i * .08);
+  });
+  tl.fromTo('#meter6', { width: '0%' }, { width: '86%', duration: 3.5, ease: 'power2.out', immediateRender: false }, S6 + .5);
+  tl.to('#livedot', { boxShadow: '0 0 0 22px rgba(74,222,128,0)', duration: .8, repeat: 5, ease: 'power1.out' }, S6 + .2);
+  tl.fromTo('#livetxt', { scale: 1 }, { scale: 1.35, duration: .2, yoyo: true, repeat: 1, immediateRender: false }, at('live'));
+  tl.fromTo('#stamp', { scale: 3, opacity: 0, rotation: -20 }, { scale: 1, opacity: 1, rotation: 8, duration: .35, ease: 'power4.in', immediateRender: false }, at('on-chain') - .2);
+  shake(at('on-chain') + .15, 14);
+  // coins "land" on the card
+  const c6 = $('#coins6');
+  for (let i = 0; i < 10; i++) {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '-50 -50 100 100'); s.setAttribute('width', 100); s.setAttribute('height', 100);
+    s.style.cssText = 'position:absolute;left:-50px;top:-50px;opacity:0'; s.innerHTML = '<use href="#coin" x="-50" y="-50" width="100" height="100"/>';
+    c6.appendChild(s);
+    const t0 = at('dollar') - .2 + i * .06;
+    tl.set(s, { opacity: 1, x: (rnd() - .5) * 760, y: -120, rotation: 0 }, t0)
+      .to(s, { y: 820 + rnd() * 60, rotation: (rnd() - .5) * 360, duration: .5, ease: 'power3.in' }, t0)
+      .to(s, { scale: 0, opacity: 0, duration: .2 }, t0 + .5);
+  }
+
+  /* ================= S7 · 30 DAYS (34 → 36.9) ================= */
+  const S7 = at('christmas', 2) - .05;
+  ribbonWipe(S7);
+  scene('#s7', S7, at('every', 3) - .05);
+  tl.fromTo('#p7', { scale: 1.3 }, { scale: 1.08, duration: 3, ease: 'none', immediateRender: false }, S7);
+  tl.fromTo('#xmas', { opacity: 0, letterSpacing: '0.5em' }, { opacity: 1, letterSpacing: '0.14em', duration: .7, immediateRender: false }, S7 + .1);
+  tl.set('#xmas', { opacity: 0 }, 0);
+  $$('#doors .door').forEach((d, i) => {
+    tl.fromTo(d, { rotationY: -100, opacity: 0 }, { rotationY: 0, opacity: 1, duration: .7, ease: 'back.out(1.6)', immediateRender: false }, at('thirty') - .2 + i * .1);
+  });
+  tl.set('#doors .door', { opacity: 0 }, 0);
+  tl.fromTo('#days', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .5, immediateRender: false }, at('days'));
+  tl.set('#days', { opacity: 0 }, 0);
+  flash(at('thirty') + .45, .3);
+
+  /* ================= S8 · EVERY TRADE WRAPS A GIFT → END CARD (36.9 → 45) ================= */
+  const S8 = at('every', 3) - .05;
+  tearWipe(S8);
+  scene('#s8', S8);
+  camDrift('#cam8', S8, DURATION, 1.04);
+  const b8a = blocks('#b8a', 'EVERY TRADE', 0), b8b = blocks('#b8b', 'WRAPS A GIFT', 2);
+  dropBlocks(b8a, S8 + .02, { stagger: .025 });
+  dropBlocks(b8b, at('wraps') - .3, { stagger: .025 });
+  flash(at('gift') + .2, .35); shake(at('gift') + .2, 12);
+  const TF = at('follow') + .05;
+  blowBlocks(b8a.concat(b8b), TF - .1);
+  tl.set('#end', { opacity: 0 }, 0).set('#end', { opacity: 1 }, TF);
+  tl.fromTo('#coin8', { scale: .1, rotationY: -1080, y: 300 }, { scale: 1, rotationY: 0, y: 0, duration: 1.3, ease: 'expo.out', immediateRender: false }, TF)
+    .to('#coin8', { rotationY: 540, duration: DURATION - TF - 1.3, ease: 'none' }, TF + 1.3)
+    .fromTo('#endTitle', { scale: 2.5, opacity: 0 }, { scale: 1, opacity: 1, duration: .5, ease: 'power4.out', immediateRender: false }, TF + .25)
+    .fromTo('#endSub', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: .6, immediateRender: false }, TF + .45)
+    .fromTo('#follow', { scale: 0, rotation: -6 }, { scale: 1, rotation: 0, duration: .7, ease: 'back.out(2.2)', immediateRender: false }, TF + .6)
+    .to('#follow', { scale: 1.06, duration: .45, yoyo: true, repeat: 7, ease: 'sine.inOut' }, TF + 1.4)
+    .fromTo('#fine', { opacity: 0 }, { opacity: 1, duration: .6, immediateRender: false }, TF + 1);
+  tl.set(['#endTitle', '#endSub', '#fine'], { opacity: 0 }, 0).set('#follow', { scale: 0 }, 0);
+  // toys rain down behind the end card
+  const rain = $('#rain8');
+  const ids = ['toy-bear', 'toy-train', 'toy-rocket', 'toy-duck', 'toy-gift'];
+  for (let i = 0; i < 18; i++) {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 100 100'); s.setAttribute('class', 'toy');
+    s.innerHTML = `<use href="#${pick(ids)}"/>`; s.style.opacity = 0;
+    rain.appendChild(s);
+    const x = rnd() * 980 - 40, t0 = TF + .3 + rnd() * 4.5;
+    tl.set(s, { opacity: .95, x, y: -220, rotation: (rnd() - .5) * 60, scale: .6 + rnd() * .6 }, t0)
+      .to(s, { y: 2000, rotation: `+=${(rnd() - .5) * 360}`, duration: 2.4 + rnd() * 1.2, ease: 'none' }, t0);
+  }
+  confetti('#rain8', TF + .1, 60, 600);
+  $('#rain8').style.zIndex = 1;
+
+  /* ---------- captions: groups of ≤3 words, active word in gold ---------- */
+  // spoken "pump dot fun" / "donate dot G G" are shown the way they're written
+  const cw = [];
+  for (let i = 0; i < words.length; i++) {
+    const w = words[i], low = x => x && x.w.toLowerCase().replace(/[^a-z]/g, '');
+    if (low(words[i + 1]) === 'dot') {
+      let j = i + 2, txt = w.w + '.' + words[j].w;
+      while (words[j + 1] && /^[A-Z]\.?$/.test(words[j + 1].w) && /^[A-Z]\.?$/.test(words[j].w)) { j++; txt += words[j].w; }
+      cw.push({ w: txt.replace(/\.(?=.*\.)/g, (m, o) => (o === w.w.length ? '.' : '')), s: w.s, e: words[j].e });
+      i = j; continue;
+    }
+    cw.push({ w: w.w, s: w.s, e: w.e });
+  }
+  const groups = [];
+  let g = [];
+  cw.forEach((w, i) => {
+    g.push(i);
+    const end = /[.,?!]$/.test(w.w) || g.length >= 3 || (cw[i + 1] && cw[i + 1].s - w.e > .35);
+    if (end) { groups.push(g); g = []; }
+  });
+  if (g.length) groups.push(g);
+  const cap = $('#cap');
+  let shownGroup = -1, shownWord = -1;
+  const show = w => w.replace(/\.\.\.$/, '').replace(/,$/, '');
+  function captions(t) {
+    const tt = t - OFF;
+    let gi = groups.findIndex(gr => tt >= cw[gr[0]].s - .05 && tt <= cw[gr[gr.length - 1]].e + .25);
+    if (t > TF + .2) gi = -1;                 // the end card speaks for itself
+    if (gi !== shownGroup) {
+      shownGroup = gi; shownWord = -1;
+      cap.innerHTML = gi < 0 ? '' : groups[gi].map(i => '<span data-i="' + i + '">' + show(cw[i].w) + '</span>').join('');
+    }
+    if (gi >= 0) {
+      const wi = groups[gi].filter(i => tt >= cw[i].s - .03).pop();
+      if (wi !== shownWord) {
+        shownWord = wi;
+        cap.querySelectorAll('span').forEach(sp => sp.classList.toggle('on', +sp.dataset.i === wi));
+      }
+      cap.querySelectorAll('span').forEach(sp => {
+        const i = +sp.dataset.i, k = Math.min(1, Math.max(0, (tt - cw[i].s) / .12));
+        sp.style.transform = i === wi ? 'scale(' + (1 + .07 * (1 - Math.abs(1 - 2 * k))) + ')' : 'scale(1)';
+      });
+    }
+  }
+
+  /* ---------- deterministic snow + grain ---------- */
+  const cv = $('#snow'), cx = cv.getContext('2d');
+  const flakes = Array.from({ length: 140 }, () => ({ x: rnd() * 1080, y: rnd() * 1920, r: rnd() * 3.2 + 1, s: 60 + rnd() * 120, d: rnd() * 6.28, o: .25 + rnd() * .55 }));
+  function snow(t) {
+    cx.clearRect(0, 0, 1080, 1920);
+    for (const f of flakes) {
+      const y = (f.y + t * f.s) % 2000 - 40, x = f.x + Math.sin(t * .8 + f.d) * 24;
+      cx.globalAlpha = f.o; cx.fillStyle = '#FFF4E3'; cx.beginPath(); cx.arc(x, y, f.r, 0, 6.283); cx.fill();
+    }
+  }
+
+  window.__duration = DURATION;
+  window.__seek = t => {
+    // never sit exactly on 0: everything placed at t=0 (initial states, scene 1 visibility) must render
+    tl.time(Math.max(t, 0.0005), false);
+    captions(t);
+    snow(t);
+    $('#grain').style.transform = `translate(${(Math.floor(t * 24) * 37) % 200 - 100}px, ${(Math.floor(t * 24) * 53) % 200 - 100}px)`;
+  };
+  await document.fonts.ready;
+  await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
+  await Promise.all(['gen/img-toys.jpg', 'gen/img-unwrap.jpg', 'gen/img-tree.jpg'].map(src => new Promise(r => { const i = new Image(); i.onload = i.onerror = r; i.src = src; })));
+  window.__seek(0);
+  window.__ready = true;
+})();
+</script>
+</body>
+</html>

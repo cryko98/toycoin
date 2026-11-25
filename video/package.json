@@ -1,0 +1,12 @@
+{
+  "name": "toycoin-video",
+  "private": true,
+  "description": "Toycoin TikTok promo: HTML/GSAP composition rendered frame-by-frame, fal.ai voice/music/images.",
+  "scripts": {
+    "render": "node render.js"
+  },
+  "dependencies": {
+    "ffmpeg-static": "5.2.0",
+    "puppeteer-core": "23.11.1"
+  }
+}
