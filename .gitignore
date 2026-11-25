@@ -2,9 +2,6 @@
 node_modules/
 .DS_Store
 Thumbs.db
-video/node_modules/
-video/gen/*.mp3
-video/gen/*.wav
-video/*.mp4
-video/frames/
-banner/*.png
+# promo video + banner: local only, never pushed
+video/
+banner/
